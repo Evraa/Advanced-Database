@@ -32,9 +32,41 @@ int hashCode(int key){
  * 	pwrite() writes up to count bytes from the buffer starting  at  buf  to
        the  file  descriptor  fd  at  offset  offset.
  */
-int insertItem(int fd,DataItem item){
+int insertItem(int fd, DataItem item){
    //TODO: implement this function
-   return 0;
+	//Definitions
+	struct DataItem data;   //a variable to read in it the records from the db
+	int rewind = 0;			//A flag to start searching from the first bucket
+	int hashIndex = hashCode(item.key);  				//calculate the Bucket index
+	int startingOffset = hashIndex*sizeof(Bucket);		//calculate the starting address of the bucket
+	int Offset = startingOffset;						//Offset variable which we will use to iterate on the db
+	item.valid = 1;
+	int count = -1;
+
+	RESEEK:
+	count++;
+	ssize_t read_result = pread(fd,&data,sizeof(DataItem), Offset);
+
+    if(read_result <= 0)
+	{ 	 
+		return count;
+    }
+    else if (data.valid == 0) {
+    	pwrite(fd, &item, sizeof(DataItem), Offset);
+		return count;
+    } else { 
+    		Offset  += sizeof(DataItem);  //move the offset to next record
+    		if(Offset >= FILESIZE && rewind ==0 )
+    		 { 
+    				rewind = 1;
+    				Offset = 0;
+    				goto RESEEK;
+    	     } else
+    	    	  if(rewind == 1 && Offset >= startingOffset) {
+    				return -1;
+    	     }
+    		goto RESEEK;
+    }
 }
 
 
