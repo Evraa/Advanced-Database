@@ -157,23 +157,29 @@ int insertItem(int fd, DataItem item){
  */
 int searchItem(int fd,struct DataItem* item,int *count)
 {
-	struct DataItem data;   //a variable to read in it the records from the db
-	*count = 0;				//No of accessed records
+	struct DataItem data;   							//a variable to read in it the records from the db
+	*count = 0;											//No of accessed records
 	int hashIndex = hashCode(item->key);  				//calculate the Bucket index
 	int startingOffset = hashIndex*sizeof(Bucket);		//calculate the starting address of the bucket
 	
-	ssize_t result = pread(fd,&data,sizeof(DataItem), startingOffset);
-	//one record accessed
-	(*count)++;
-	
-	if(result <= 0) 
-		return -1;
-    
-	if (data.valid == 1 && data.key == item->key)
+    while(startingOffset != -1)
 	{
-		item->data = data.data ;
-		return startingOffset;
+		ssize_t result = pread(fd,&data,sizeof(DataItem), startingOffset);
+		//one record accessed
+		(*count)++;
+		//Error
+		if(result <= 0) 
+			return -1;
+		//if data && key required, return it.
+		if (data.valid == 1 && data.key == item->key)
+		{
+			item->data = data.data ;
+			return startingOffset;
+		}
+		//else, keep looping
+		startingOffset = data.pointer_index;
 	}
+	
 	return -1;	
 	
 }
