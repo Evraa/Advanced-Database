@@ -61,10 +61,7 @@ int main(){
    filehandle = createFile(FILESIZE,(char *)"openaddressing");
   //2. Display the database file, check openAddressing.cpp
    // DisplayFile(filehandle);
-
-  //Test case 1
-   testCase_1();
-
+   
   //3. Add some data in the table
    insert(1, 1);     //1
    insert(2, 2);     //2

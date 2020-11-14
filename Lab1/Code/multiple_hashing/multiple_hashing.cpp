@@ -42,7 +42,6 @@ int insertItem(int fd, DataItem item){
 	int Offset = startingOffset;						//Offset variable which we will use to iterate on the db
 	int num_collisions = 0;
 	bool open_addressing = 0;
-	int num_collisions = 0;
 	item.valid = 1;
 	int count = -1;
 
@@ -165,7 +164,8 @@ int searchItem(int fd,struct DataItem* item,int *count)
  * Output: no. of non-empty records
  */
 int DisplayFile(int fd){
-
+	printf("\n\n####### Display File #######\n\n");
+	
 	struct DataItem data;
 	int count = 0;
 	int Offset = 0;
@@ -176,13 +176,14 @@ int DisplayFile(int fd){
 		{ 	  perror("some error occurred in pread");
 			  return -1;
 		} else if (result == 0 || data.valid == 0 ) { //empty space found or end of file
-			printf("Bucket: %d, Offset %d:~\n",Offset/BUCKETSIZE,Offset);
+			printf("Bucket: %d, Offset %d:~\n",(int)(Offset/BUCKETSIZE),Offset);
 		} else {
 			pread(fd,&data,sizeof(DataItem), Offset);
-			printf("Bucket: %d, Offset: %d, Data: %d, key: %d\n",Offset/BUCKETSIZE,Offset,data.data,data.key);
+			printf("Bucket: %d, Offset: %d, Data: %d, key: %d\n",(int)(Offset/BUCKETSIZE),Offset,data.data,data.key);
 					 count++;
 		}
 	}
+	printf("\n####### EOF #######\n\n");
 	return count;
 }
 

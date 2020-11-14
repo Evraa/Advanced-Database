@@ -39,45 +39,96 @@ int filehandle;   //handler for the database file
  * Functions in this file are just wrapper functions, the actual functions are in openAddressing.cpp
 
 */
+void testCase_1 (){
+   printf("Test Case 1:\n\t+ Adding elements at hash = 1, hash = 2 and various positions.\n\t+ Make sure to fill the File\n");
+   printf("\t+ Search for keys at their buckets, and outside it: 13 and 73");
+   printf("########### End of Test Case 1 ###############\n");
+}
+
+void testCase_2 (){
+   printf("Test Case 2:\n\t+ Continuing after test case 1\n");
+   printf("\t+ Search for element at bottom of chain\n");
+   printf("\t+ Delete items at their buckets and outside of it: \n");
+   printf("########### End of Test Case 2 ###############\n");
+}
+
 
 int main(){
 
 //here we create a sample test to read and write to our database file
 
   //1. Create Database file or Open it if it already exists, check readfile.cpp
-   filehandle = createFile(FILESIZE,"openaddressing");
+   filehandle = createFile(FILESIZE,(char *)"multiple_hashing");
   //2. Display the database file, check openAddressing.cpp
-   DisplayFile(filehandle);
+   // DisplayFile(filehandle);
 
-  
+
   //3. Add some data in the table
-   insert(1, 20);
-   insert(2, 70);
-   insert(42, 80);
-   insert(4, 25);
-   insert(12, 44);
-   insert(14, 32);
-   insert(17, 11);
-   insert(13, 78);
-   insert(37, 97);
-   insert(11, 34);
-   insert(22, 730);
-   insert(46, 840);
-   insert(9, 83);
-   insert(21, 424);
-   insert(41, 115);
-   insert(71, 47);
-   insert(31, 92);
-   insert(73, 45);
-
-   //4. Display the database file again
+   insert(1, 1);     //1
+   DisplayFile(filehandle);
+   insert(2, 2);     //2
+   DisplayFile(filehandle);
+   insert(42, 3);    //2
+   DisplayFile(filehandle);
+   insert(91, 4);    //1
+   DisplayFile(filehandle);
+   insert(12, 5);    //2
+   DisplayFile(filehandle);
+   insert(14, 6);    //4
+   DisplayFile(filehandle);
+   insert(17, 7);    //7
+   DisplayFile(filehandle);
+   insert(13, 8);    //3
+   DisplayFile(filehandle);
+   insert(37, 9);    //7
+   DisplayFile(filehandle);
+   insert(11, 10);   //1
+   DisplayFile(filehandle);
+   insert(22, 11);   //2
+   DisplayFile(filehandle);
+   insert(46, 12);   //6
+   DisplayFile(filehandle);
+   insert(9, 13);    //9
+   DisplayFile(filehandle);
+   insert(21, 14);   //1
+   DisplayFile(filehandle);
+   insert(41, 15);   //1
+   DisplayFile(filehandle);
+   insert(71, 16);   //1
+   DisplayFile(filehandle);
+   insert(31, 17);   //1
+   DisplayFile(filehandle);
+   insert(73, 18);   //3
+   insert(99, 19);   //9
+   insert(37, 20);   //7
+   insert(27, 21);   //7
+   insert(47, 22);   //7
+   insert(41, 23);   //1
+   insert(51, 24);   //1
+   insert(61, 25);   //1
+   insert(81, 26);   //1
+   insert(101, 27);  //1
+   insert(111, 28);  //1
+   insert(121, 29);  //1
+   insert(131, 30);  //1
+   insert(141, 31);  //1
+   insert(151, 32);  //1
    DisplayFile(filehandle);
 
+   testCase_1();
    //5. Search the database
-   search(13);
+   search(13);    //at the end of its bucket
+   search(73);    //outside its bucket
+   DisplayFile(filehandle);
 
+
+   testCase_2();
    //6. delete an item from the database
-   deleteItem(31);
+   deleteItem(1);    //start of its bucket
+   deleteItem(91);   //end of its bucket
+   deleteItem(11);   //outside its bucket
+   DisplayFile(filehandle);
+
 
    //7. Display the final data base
    DisplayFile(filehandle);
