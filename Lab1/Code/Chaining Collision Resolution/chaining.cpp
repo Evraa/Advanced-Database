@@ -64,6 +64,7 @@ int insertItem(int fd, DataItem item){
 		{
 			//check if the data written is at overflow and last offset is assigned to -1
 			ssize_t read_result_2 = pread(fd, &data, DATASIZE, lastOffset);
+			count++;
 			//if that last data points to -1, then assign it
 			if (data.pointer_index == -1)
 			{
