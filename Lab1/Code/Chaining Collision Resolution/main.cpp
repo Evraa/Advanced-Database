@@ -53,21 +53,7 @@ int main(){
 
    //3. Add some data in the table
    insert(1, 20);
-   insert(1, 21);
-   insert(1, 22);
-   insert(1, 23);
-   insert(1, 24);
-   insert(1, 25);
-
-   insert(1, 20);
-   insert(1, 20);
-   insert(1, 20);
-   insert(1, 20);
-   insert(1, 20);
-   insert(1, 20);
-   insert(1, 20);
-   insert(1, 20);
-
+   
    insert(2, 70);
    insert(42, 80);
    insert(4, 25);
@@ -90,8 +76,8 @@ int main(){
    DisplayFile(filehandle);
 
    //5. Search the database
-   search(13);
-
+   search(11);
+   search(21);
    //6. delete an item from the database
    deleteItem(31);
 
