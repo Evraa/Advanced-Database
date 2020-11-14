@@ -20,7 +20,9 @@
 #define RECORDSPERBUCKET 2				//No. of records inside each Bucket
 #define BUCKETSIZE sizeof(Bucket)		//Size of the bucket (in bytes)
 #define OVERFLOWSIZE BUCKETSIZE*MBUCKETS
-#define FILESIZE BUCKETSIZE*MBUCKETS*2    //Size of the file 
+// #define FILESIZE BUCKETSIZE*MBUCKETS*2    //Size of the file 
+#define FILESIZE OVERFLOWSIZE*2    //Size of the file 
+
 
 
 //Data Record inside the file

@@ -36,44 +36,54 @@ int insertItem(int fd, DataItem item){
    //TODO: implement this function
 	//Definitions
 	struct DataItem data;   //a variable to read in it the records from the db
-	int rewind = 0;			//A flag to start searching from the first bucket
 	int hashIndex = hashCode(item.key);  				//calculate the Bucket index
 	int startingOffset = hashIndex*sizeof(Bucket);		//calculate the starting address of the bucket
+	//No need for that!
 	int Offset = startingOffset;						//Offset variable which we will use to iterate on the db
 	item.valid = 1;
-	int count = -1;
+	int count = -1;										//# Records we span in order to find an empty space
 	int overflow = 0;
-
+	
+	//Main Loop
 	RESEEK:
 	count++;
+	//read data at offset
 	ssize_t read_result = pread(fd,&data,sizeof(DataItem), Offset);
-
+	//Error occured...
     if(read_result <= 0)
-	{ 	 
-		return count;
-    }
-    else if (data.valid == 0) {
-    	pwrite(fd, &item, sizeof(DataItem), Offset);
+		return -1;
 
-		ssize_t read_result2 = pread(fd,&data,sizeof(DataItem), startingOffset);
-		if (data.pointer_index == -1 && Offset >= OVERFLOWSIZE){
+	//Deleted or Unused place for data.
+    else if (data.valid == 0) 
+	{
+		//Write your item at offset.
+    	pwrite(fd, &item, sizeof(DataItem), Offset);
+		//Get the last offset of that bucket starting offset
+		int lastOffset = startingOffset + ((RECORDSPERBUCKET-1)*sizeof(DataItem));
+		printf("Hey Ev: starting offset is: %d,  Last offset is: %d \n", startingOffset, lastOffset);
+		//check if the data written is at overflow and last offset is assigned to -1
+		ssize_t read_result_2 = pread(fd, &data, sizeof(DataItem), lastOffset);
+		if (data.pointer_index == -1 && Offset >= OVERFLOWSIZE)
+		{
 			data.pointer_index = Offset;
-			pwrite(fd, &data, sizeof(DataItem), startingOffset);
+			pwrite(fd, &data, sizeof(DataItem), lastOffset);
 		}
 
 		return count;
-    } else { 
-    		Offset  += sizeof(DataItem);  //move the offset to next record
-    		if(Offset >= (startingOffset + BUCKETSIZE) && overflow ==0 )
-    		 {	
-				 	overflow = 1;
-    				Offset = OVERFLOWSIZE;
-    				goto RESEEK;
-    	     } else
-    	    	  if(overflow == 1 && Offset >= FILESIZE) {
-    				return -1;
-    	     }
-    		goto RESEEK;
+    }	
+	else
+	{ 
+		Offset  += sizeof(DataItem);  //move the offset to next record
+		if(Offset >= (startingOffset + BUCKETSIZE) && overflow ==0 )
+			{	
+				overflow = 1;
+				Offset = OVERFLOWSIZE; //edit here
+				goto RESEEK;
+			} else
+				if(overflow == 1 && Offset >= FILESIZE) {
+				return -1;
+			}
+		goto RESEEK;
     }
 }
 
