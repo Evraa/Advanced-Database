@@ -51,11 +51,16 @@ int main(){
    // DisplayFile(filehandle);
 
   
-  //3. Add some data in the table
+   //3. Add some data in the table
    insert(1, 20);
-   insert(1, 41);
-   DisplayFile(filehandle);
+   insert(1, 21);
+   insert(1, 22);
+   insert(1, 23);
+   insert(1, 24);
+   insert(1, 25);
+
    deleteItem(1);
+   
    // insert(1, 20);
    // insert(1, 20);
    // insert(1, 20);

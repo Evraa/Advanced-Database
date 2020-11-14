@@ -1,5 +1,6 @@
 #include "readfile.h"
-
+#include <iostream>
+using namespace std;
 
 /* Hash function to choose bucket
  * Input: key used to calculate the hash
@@ -9,30 +10,7 @@ int hashCode(int key){
    return key % MBUCKETS;
 }
 
-// int lastOverflowIndex = -1;
 
-/* Functionality insert the data item into the correct position
- *          1. use the hash function to determine which bucket to insert into
- *          2. search for the first empty space within the bucket
- *          	2.1. if it has empty space
- *          	           insert the item
- *          	     else
- *          	          use OpenAddressing to insert the record
- *          3. return the number of records accessed (searched)
- *
- * Input:  fd: filehandler which contains the db
- *         item: the dataitem which should be inserted into the database
- *
- * Output: No. of record searched
- *
- * Hint: You can check the search function to give you some insights
- * Hint2: Don't forget to set the valid bit = 1 in the data item for the rest of functionalities to work
- * Hint3: you will want to check how to use the pwrite function using man pwrite on the terminal
- * 			 ssize_t pwrite(int fd, const void *buf, size_t count, off_t offset);
- *
- * 	pwrite() writes up to count bytes from the buffer starting  at  buf  to
-       the  file  descriptor  fd  at  offset  offset.
- */
 int insertItem(int fd, DataItem item){
    //TODO: implement this function
 	//Definitions
@@ -286,36 +264,90 @@ int DisplayFile(int fd){
  */
 int deleteOffset(int fd, int Offset)
 {
-	printf("Deleting Element at Offset: %d\n",Offset);
+	cin>>Offset;
+
+	
+	//Data iterators, using slow/fast runner approach.
 	struct DataItem dataIter;
 	struct DataItem dataIter_2;
 	ssize_t read_result = pread(fd, &dataIter, DATASIZE, Offset);
+	int hashIndex = hashCode(dataIter.key);  				//calculate the Bucket index
+	int startingOffset = hashIndex*sizeof(Bucket);		//calculate the starting address of the bucket
+	
+	//If Offset is the last element, its presuccesor needs to point to -1.
+	if (dataIter.pointer_index == -1)
+	{
+		//Now offset is the last element, delete it and return.
+		struct DataItem dummyItem;
+		dummyItem.valid = 0;
+		dummyItem.key = -1;
+		dummyItem.data = 0;
+		dummyItem.pointer_index = 0;
+		pwrite(fd,&dummyItem,sizeof(DataItem), Offset);
 
+		if (Offset < OVERFLOWSIZE)
+		{
+			//within the Originals
+			//simple minus operation
+			if (Offset!=startingOffset)
+			{
+				ssize_t read_result_2 = pread(fd, &dataIter_2, DATASIZE, Offset-DATASIZE);
+				dataIter_2.pointer_index = -1;
+				int result = pwrite(fd,&dataIter_2,sizeof(DataItem), Offset-DATASIZE);
+				return result;
+			}
+			//else is handled down below.
+		}
+		else
+		{
+			//within overflow
+			//Brute force search for presuccessor
+			ssize_t read_result_2 = pread(fd, &dataIter_2, DATASIZE, startingOffset);
+
+			while (dataIter_2.pointer_index != Offset)
+			{
+				startingOffset = dataIter_2.pointer_index;
+				ssize_t read_result_2 = pread(fd, &dataIter_2, DATASIZE, startingOffset);
+			}
+			dataIter_2.pointer_index = -1;
+			int result = pwrite(fd,&dataIter_2,sizeof(DataItem), startingOffset);
+			return result;
+		}
+		
+	}
 	while (dataIter.pointer_index != -1)
 	{
 		ssize_t read_result_2 = pread(fd, &dataIter_2, DATASIZE, dataIter.pointer_index);
+		//Copy data of the fast runner to slow runner
 		dataIter.data = dataIter_2.data;	
-
+		//keep second pointer as a temp.
 		int temp = dataIter.pointer_index;
-
+		//if fast runner is the end, then slow runner WILL be the end.
 		if (dataIter_2.pointer_index == -1)
 			dataIter.pointer_index = -1;
-
+		//Write your updates
 		pwrite(fd,&dataIter,sizeof(DataItem), Offset);
-		//update
+		//update the offset
 		Offset = temp;
-		
+		//read and repeat
 		ssize_t read_result = pread(fd, &dataIter, DATASIZE, Offset);
-		
 	}
-	printf("Ya Ev Deleting at offset: %d\n",Offset);
+	//Now offset is the last element, delete it and return.
 	struct DataItem dummyItem;
 	dummyItem.valid = 0;
 	dummyItem.key = -1;
 	dummyItem.data = 0;
 	dummyItem.pointer_index = 0;
 	int result = pwrite(fd,&dummyItem,sizeof(DataItem), Offset);
-
 	return result;
 }
 
+
+
+/*
+	Test Cases Tried:
+		+ Insert then Delete.
+		+ Fill Overflow, and then delete all.
+		+ Delete element does not exist.
+		+ Deleting offset in the middle of the chain (EVERYWHERE)
+*/
