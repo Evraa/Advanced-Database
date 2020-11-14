@@ -191,7 +191,7 @@ int searchItem(int fd,struct DataItem* item,int *count)
  * Output: no. of non-empty records
  */
 int DisplayFile(int fd){
-
+	printf("\n\n####### Display File #######\n\n");
 	struct DataItem data;
 	int count = 0;
 	int Offset = 0;
@@ -223,6 +223,7 @@ int DisplayFile(int fd){
 					 count++;
 		}
 	}
+	printf("\n####### EOF #######\n\n");
 	return count;
 }
 

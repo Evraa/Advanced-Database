@@ -14,10 +14,10 @@ int createFile(int size,char * name)
     struct stat sb;
 
     if (stat(name, &sb) == -1) {
-         printf("file doesn't exist, create it\n");
+         printf("file doesn't exist, create it\n\n");
     fd = open(name, O_RDWR | O_CREAT , (mode_t)0600);
     if (fd == -1) {
-	perror("Error opening file for writing");
+	perror("Error opening file for writing\n\n");
         return 1;
     }
 
