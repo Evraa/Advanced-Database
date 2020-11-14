@@ -157,58 +157,25 @@ int insertItem(int fd, DataItem item){
 
 int searchItem(int fd,struct DataItem* item,int *count)
 {
-
-	//Definitions
 	struct DataItem data;   //a variable to read in it the records from the db
 	*count = 0;				//No of accessed records
-	int rewind = 0;			//A flag to start searching from the first bucket
 	int hashIndex = hashCode(item->key);  				//calculate the Bucket index
 	int startingOffset = hashIndex*sizeof(Bucket);		//calculate the starting address of the bucket
-	int Offset = startingOffset;						//Offset variable which we will use to iterate on the db
-	int overflow = 0;
-	int overflow_startingOffset = -1;
-
-	//Main Loop
-	RESEEK:
-	//on the linux terminal use man pread to check the function manual
-	ssize_t result = pread(fd,&data,sizeof(DataItem), Offset);
+	
+	ssize_t result = pread(fd,&data,sizeof(DataItem), startingOffset);
 	//one record accessed
 	(*count)++;
-	//check whether it is a valid record or not
-    if(result <= 0) //either an error happened in the pread or it hit an unallocated space
-	{ 	 // perror("some error occurred in pread");
-		  return -1;
-    }
-    else if (data.valid == 1 && data.key == item->key) {
-    	//I found the needed record
-    			item->data = data.data ;
-    			return Offset;
-
-    } else { //not the record I am looking for
-    		Offset +=sizeof(DataItem);  //move the offset to next record
-    		if(Offset >= (startingOffset + BUCKETSIZE) && overflow == 0)
-    		 { //if reached end of the Bucket start searching in OVERFLOW
-    				overflow = 1;
-					ssize_t result = pread(fd,&data,sizeof(DataItem), startingOffset);
-					if (data.pointer_index == -1){
-						return -1;
-					}
-    				overflow_startingOffset = data.pointer_index;
-					Offset = overflow_startingOffset;
-    				goto RESEEK;
-    	     } else 
-			 	if (Offset >= FILESIZE && rewind ==0){
-					rewind = 1;
-    				Offset = OVERFLOWSIZE;
-    				goto RESEEK;
-			 }
-			 
-			 else
-    	    	  if(rewind == 1 && Offset >= overflow_startingOffset) {
-    				return -1; //no empty spaces
-    	     }
-    		goto RESEEK;
-    }
+	
+	if(result <= 0) 
+		return -1;
+    
+	if (data.valid == 1 && data.key == item->key)
+	{
+		item->data = data.data ;
+		return startingOffset;
+	}
+	return -1;	
+	
 }
 
 
@@ -264,9 +231,6 @@ int DisplayFile(int fd){
  */
 int deleteOffset(int fd, int Offset)
 {
-	cin>>Offset;
-
-	
 	//Data iterators, using slow/fast runner approach.
 	struct DataItem dataIter;
 	struct DataItem dataIter_2;
