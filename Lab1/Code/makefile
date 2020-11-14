@@ -1,11 +1,19 @@
-subsystems: subsystem_1 subsystem_2 subsystem_3
+all: open multiple chain
 	echo "All done and created"
 
-subsystem_1:
+chain:
 	cd ChainingCollisionResolution && $(MAKE)
 
-subsystem_2:
+multiple:
 	cd multiple_hashing && $(MAKE)
 
-subsystem_3:
+open:
 	cd openadressing && $(MAKE)
+
+
+clean_open :
+	cd openadressing && make clean
+clean_multiple:
+	cd multiple_hashing && make clean
+clean_chain:
+	cd ChainingCollisionResolution && make clean

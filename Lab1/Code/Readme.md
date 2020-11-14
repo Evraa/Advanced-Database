@@ -1,7 +1,24 @@
-To run the program
+# HOW To Run:
 
-make
+### Open Addressing
+    $ make open
 
-when finished
+### Multiple Hashing
+    $ make multiple
 
-make clean
+### Chaining
+    $ make chain
+
+### All at once
+    $ make
+
+# To Clean
+
+### Open Addressing
+    $ make clean_open
+
+### Multiple Hashing
+    $ make clean_multiple
+
+### Chaining
+    $ make clean_chain

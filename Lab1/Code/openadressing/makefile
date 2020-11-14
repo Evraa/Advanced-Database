@@ -1,3 +1,6 @@
+run: output
+	./output
+	
 output: readfile.o main.o openAddressing.o 
 	g++ -o output main.o openAddressing.o readfile.o 
 
