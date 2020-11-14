@@ -41,15 +41,14 @@ int filehandle;   //handler for the database file
 */
 void testCase_1 (){
    printf("Test Case 1:\n\t+ Adding elements at hash = 1, hash = 2 and various positions.\n\t+ Make sure to fill the File\n");
+   printf("\t+ Search for keys at their buckets, and outside it: 13 and 73");
    printf("########### End of Test Case 1 ###############\n");
 }
 
 void testCase_2 (){
    printf("Test Case 2:\n\t+ Continuing after test case 1\n");
    printf("\t+ Search for element at bottom of chain\n");
-   printf("\t+ Search for element at start of chain\n");
-   printf("\t+ Search for element at end of bucket\n");
-   printf("\t+ Search for element at start of bucket\n");
+   printf("\t+ Delete items at their buckets and outside of it: \n");
    printf("########### End of Test Case 2 ###############\n");
 }
 
@@ -102,15 +101,19 @@ int main(){
    DisplayFile(filehandle);
 
    
-
+   testCase_1();
    //5. Search the database
-   search(13);
-
-   //6. delete an item from the database
-   deleteItem(31);
-
-   //7. Display the final data base
+   search(13);    //at the end of its bucket
+   search(73);    //outside its bucket
    DisplayFile(filehandle);
+
+   testCase_2();
+   //6. delete an item from the database
+   deleteItem(1);    //start of its bucket
+   deleteItem(91);   //end of its bucket
+   deleteItem(11);   //outside its bucket
+   DisplayFile(filehandle);
+
    // And Finally don't forget to close the file.
    close(filehandle);
    return 0;
