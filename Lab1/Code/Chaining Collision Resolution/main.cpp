@@ -46,11 +46,11 @@ int main(){
 
    //1. Create Database file or Open it if it already exists, check readfile.cpp
    filehandle = createFile(FILESIZE,(char *)"chaining");
-   
-  //2. Display the database file, check openAddressing.cpp
-   // DisplayFile(filehandle);
 
-  
+   //2. Display the database file, check openAddressing.cpp
+   DisplayFile(filehandle);
+
+
    //3. Add some data in the table
    insert(1, 20);
    insert(1, 21);
@@ -59,52 +59,47 @@ int main(){
    insert(1, 24);
    insert(1, 25);
 
-   deleteItem(1);
-   
-   // insert(1, 20);
-   // insert(1, 20);
-   // insert(1, 20);
-   // insert(1, 20);
-   // insert(1, 20);
-   // insert(1, 20);
-   // insert(1, 20);
-   // insert(1, 20);
-   
-   // insert(2, 70);
-   // insert(42, 80);
-   // insert(4, 25);
-   // insert(12, 44);
-   // insert(14, 32);
-   // insert(17, 11);
-   // insert(13, 78);
-   // insert(37, 97);
-   // insert(11, 34);
-   // insert(22, 730);
-   // insert(46, 840);
-   // insert(9, 83);
-   // insert(21, 424);
-   // insert(41, 115);
-   // insert(71, 47);
-   // insert(31, 92);
-   // insert(73, 45);
+   insert(1, 20);
+   insert(1, 20);
+   insert(1, 20);
+   insert(1, 20);
+   insert(1, 20);
+   insert(1, 20);
+   insert(1, 20);
+   insert(1, 20);
+
+   insert(2, 70);
+   insert(42, 80);
+   insert(4, 25);
+   insert(12, 44);
+   insert(14, 32);
+   insert(17, 11);
+   insert(13, 78);
+   insert(37, 97);
+   insert(11, 34);
+   insert(22, 730);
+   insert(46, 840);
+   insert(9, 83);
+   insert(21, 424);
+   insert(41, 115);
+   insert(71, 47);
+   insert(31, 92);
+   insert(73, 45);
 
    //4. Display the database file again
    DisplayFile(filehandle);
 
    //5. Search the database
-   // search(13);
+   search(13);
 
    //6. delete an item from the database
-   // deleteItem(31);
+   deleteItem(31);
 
    //7. Display the final data base
-   // DisplayFile(filehandle);
+   DisplayFile(filehandle);
    // And Finally don't forget to close the file.
    close(filehandle);
    return 0;
-
-
-
 }
 
 /* functionality: insert the (key,data) pair into the database table
