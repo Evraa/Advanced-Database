@@ -1,6 +1,4 @@
 #include "readfile.h"
-#include <iostream>
-using namespace std;
 
 /* Hash function to choose bucket
  * Input: key used to calculate the hash
@@ -10,10 +8,8 @@ int hashCode(int key){
    return key % MBUCKETS;
 }
 
-
 int insertItem(int fd, DataItem item){
-   //TODO: implement this function
-	//Definitions
+   //Definitions
 	struct DataItem data;   //a variable to read in it the records from the db
 	int hashIndex = hashCode(item.key);  				//calculate the Bucket index
 	int startingOffset = hashIndex*sizeof(Bucket);		//calculate the starting address of the bucket
@@ -153,8 +149,12 @@ int insertItem(int fd, DataItem item){
  *         count: No. of record searched
  *
  * Output: the in the file where we found the item
+ * 
+ * Logic:
+ * 	+ Since Delete operates shifting, then if a bucket with hash `i` has any value, then first element of that bucket
+ * 		holds a value.
+ * 	+ Hence, simply we return first item, if it doesn't exist, then no need to dig more.
  */
-
 int searchItem(int fd,struct DataItem* item,int *count)
 {
 	struct DataItem data;   //a variable to read in it the records from the db
@@ -228,6 +228,17 @@ int DisplayFile(int fd){
  *         Offset: place where it should delete
  *
  * Hint: you could only set the valid key and write just and integer instead of the whole record
+ * 
+ * Logic: 
+ * 	+ If the data to be deleted is last in chain
+ * 		+ Outside the Overflow, if not the first, then presuccessor will be (Offset-DATASIZE)
+ * 		+ Within Overflow, then set the pointer at the start of the bucket, iterate till you find the node, that points
+ * 			to the offset.
+ * 
+ * 	+ If Not (within the chain or first element)
+ * 		+ Iterate through while loop, and use slow/fast runner approach, to copy data at the faster runner to the slower
+ * 			runner.
+ * 		+ When final node is reached, simply invalid it.
  */
 int deleteOffset(int fd, int Offset)
 {
@@ -279,6 +290,7 @@ int deleteOffset(int fd, int Offset)
 		}
 		
 	}
+	
 	while (dataIter.pointer_index != -1)
 	{
 		ssize_t read_result_2 = pread(fd, &dataIter_2, DATASIZE, dataIter.pointer_index);
@@ -296,6 +308,7 @@ int deleteOffset(int fd, int Offset)
 		//read and repeat
 		ssize_t read_result = pread(fd, &dataIter, DATASIZE, Offset);
 	}
+	
 	//Now offset is the last element, delete it and return.
 	struct DataItem dummyItem;
 	dummyItem.valid = 0;
