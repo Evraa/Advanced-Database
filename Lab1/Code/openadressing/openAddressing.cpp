@@ -48,24 +48,26 @@ int insertItem(int fd, DataItem item){
 	ssize_t read_result = pread(fd,&data,sizeof(DataItem), Offset);
 
     if(read_result <= 0)
-	{ 	 
 		return count;
-    }
-    else if (data.valid == 0) {
+
+    else if (data.valid == 0) 
+	{
     	pwrite(fd, &item, sizeof(DataItem), Offset);
 		return count;
-    } else { 
-    		Offset  += sizeof(DataItem);  //move the offset to next record
-    		if(Offset >= FILESIZE && rewind ==0 )
-    		 { 
-    				rewind = 1;
-    				Offset = 0;
-    				goto RESEEK;
-    	     } else
-    	    	  if(rewind == 1 && Offset >= startingOffset) {
-    				return -1;
-    	     }
-    		goto RESEEK;
+    } 
+	else 
+	{ 
+		Offset  += sizeof(DataItem);  //move the offset to next record
+		if(Offset >= FILESIZE && rewind ==0 )
+			{ 
+				rewind = 1;
+				Offset = 0;
+				goto RESEEK;
+			} else
+				if(rewind == 1 && Offset >= startingOffset) {
+				return -1;
+			}
+		goto RESEEK;
     }
 }
 

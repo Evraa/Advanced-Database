@@ -41,46 +41,60 @@ int insertItem(int fd, DataItem item){
 	int startingOffset = hashIndex*sizeof(Bucket);		//calculate the starting address of the bucket
 	int Offset = startingOffset;						//Offset variable which we will use to iterate on the db
 	int num_collisions = 0;
-	bool open_addressing = 0;
+	bool open_addressing = false;
 	item.valid = 1;
 	int count = -1;
-
+	bool lastIndexReached = false;						//When this becomes true, it means no more place at the bucket is available
+	int lastOffset = startingOffset + ((RECORDSPERBUCKET-1)*sizeof(DataItem)); //Offset of the last element in the Bucket.
+	
 	RESEEK:
 	count++;
 	ssize_t read_result = pread(fd,&data,sizeof(DataItem), Offset);
 
     if(read_result <= 0)
-	{ 	 
 		return count;
-    }
-    else if (data.valid == 0) {
+
+    else if (data.valid == 0) 
+	{
     	pwrite(fd, &item, sizeof(DataItem), Offset);
 		return count;
-    } else { 
-			if(num_collisions == 1){
-				num_collisions = 0;
-				open_addressing = 1;
-				Offset  += sizeof(DataItem);	
+    } 
+	else 
+	{ 
+		if(num_collisions == 1 && lastIndexReached){
+			num_collisions = 0;
+			open_addressing = 1;
+			Offset  += sizeof(DataItem);	
+		}
+
+		else if(num_collisions == 0 && open_addressing && lastIndexReached){
+			Offset  += sizeof(DataItem);	
+		}
+
+		else if(num_collisions == 0 && !open_addressing && lastIndexReached){
+			num_collisions = 1;
+			Offset = hashCode(item.key, num_collisions) * sizeof(DataItem);	
+		}
+		else if (!lastIndexReached)
+		{
+			Offset += sizeof(DataItem);
+			if (Offset >= lastOffset)
+				lastIndexReached = true;
+		}
+		if(Offset >= FILESIZE && rewind ==0 )
+		{ 
+			//Rewind
+			rewind = 1;
+			Offset = 0;
+			goto RESEEK;
+		} 
+		else if(rewind == 1 && Offset >= startingOffset) 
+			{
+				printf ("File size exceeded, Can't Add more.\n");
+				return -1;
 			}
 
-			else if(num_collisions == 0 && open_addressing){
-				Offset  += sizeof(DataItem);	
-			}
-
-			else if(num_collisions == 0 && !open_addressing){
-				num_collisions = 1;
-				Offset = hashCode(item.key, num_collisions) * sizeof(DataItem);	
-			}
-			if(Offset >= FILESIZE && rewind ==0 )
-    		 { 
-    				rewind = 1;
-    				Offset = 0;
-    				goto RESEEK;
-    	     } else
-    	    	  if(rewind == 1 && Offset >= startingOffset) {
-    				return -1;
-    	     }
-    		goto RESEEK;
+		goto RESEEK;
     }
 }
 
@@ -110,7 +124,8 @@ int searchItem(int fd,struct DataItem* item,int *count)
 	int startingOffset = hashIndex*sizeof(Bucket);		//calculate the starting address of the bucket
 	int Offset = startingOffset;						//Offset variable which we will use to iterate on the db
 	bool open_addressing = 0;
-
+	bool lastIndexReached = false;						//When this becomes true, it means no more place at the bucket is available
+	int lastOffset = startingOffset + ((RECORDSPERBUCKET-1)*sizeof(DataItem)); //Offset of the last element in the Bucket.
 	//Main Loop
 	RESEEK:
 	//on the linux terminal use man pread to check the function manual
@@ -119,40 +134,51 @@ int searchItem(int fd,struct DataItem* item,int *count)
 	(*count)++;
 	//check whether it is a valid record or not
     if(result <= 0) //either an error happened in the pread or it hit an unallocated space
-	{ 	 // perror("some error occurred in pread");
-		  return -1;
-    }
-    else if (data.valid == 1 && data.key == item->key) {
+		// perror("some error occurred in pread");
+		return -1;
+
+    else if (data.valid == 1 && data.key == item->key) 
+		{
     	//I found the needed record
-    			item->data = data.data ;
-    			return Offset;
+		item->data = data.data ;
+		return Offset;
+		} 
+	//not the record I am looking for
+	else 
+	{	 
+		if(num_collisions == 1 && lastIndexReached){
+			//Start Open addressing
+			num_collisions = 0;
+			open_addressing = 1;
+			Offset  += sizeof(DataItem);	
+		}
 
-    } else { //not the record I am looking for
-			if(num_collisions == 1){
-				num_collisions = 0;
-				open_addressing = 1;
-				Offset  += sizeof(DataItem);	
+		else if(num_collisions == 0 && open_addressing && lastIndexReached){
+			//Continue Open addressing
+			Offset  += sizeof(DataItem);	
+		}
+
+		else if(num_collisions == 0 && !open_addressing && lastIndexReached){
+			//Multiple Hash
+			num_collisions = 1;
+			Offset = hashCode(item->key, num_collisions) * sizeof(DataItem);	
+		}
+		else if (!lastIndexReached)
+		{
+			Offset += sizeof(DataItem);
+			if (Offset >= lastOffset)
+				lastIndexReached = true;
+		}
+		if(Offset >= FILESIZE && rewind ==0 )
+			{ //if reached end of the file start again
+				rewind = 1;
+				Offset = 0;
+				goto RESEEK;
+			} else
+				if(rewind == 1 && Offset >= startingOffset) {
+				return -1; //no empty spaces
 			}
-
-			else if(num_collisions == 0 && open_addressing){
-				Offset  += sizeof(DataItem);	
-			}
-
-			else if(num_collisions == 0 && !open_addressing){
-				num_collisions = 1;
-				Offset = hashCode(item->key, num_collisions) * sizeof(DataItem);	
-			}
-
-    		if(Offset >= FILESIZE && rewind ==0 )
-    		 { //if reached end of the file start again
-    				rewind = 1;
-    				Offset = 0;
-    				goto RESEEK;
-    	     } else
-    	    	  if(rewind == 1 && Offset >= startingOffset) {
-    				return -1; //no empty spaces
-    	     }
-    		goto RESEEK;
+		goto RESEEK;
     }
 }
 

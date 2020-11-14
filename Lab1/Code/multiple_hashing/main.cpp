@@ -65,39 +65,22 @@ int main(){
 
   //3. Add some data in the table
    insert(1, 1);     //1
-   DisplayFile(filehandle);
    insert(2, 2);     //2
-   DisplayFile(filehandle);
    insert(42, 3);    //2
-   DisplayFile(filehandle);
    insert(91, 4);    //1
-   DisplayFile(filehandle);
    insert(12, 5);    //2
-   DisplayFile(filehandle);
    insert(14, 6);    //4
-   DisplayFile(filehandle);
-   insert(17, 7);    //7
-   DisplayFile(filehandle);
+   insert(22, 7);    //2
    insert(13, 8);    //3
-   DisplayFile(filehandle);
    insert(37, 9);    //7
-   DisplayFile(filehandle);
    insert(11, 10);   //1
-   DisplayFile(filehandle);
    insert(22, 11);   //2
-   DisplayFile(filehandle);
    insert(46, 12);   //6
-   DisplayFile(filehandle);
    insert(9, 13);    //9
-   DisplayFile(filehandle);
    insert(21, 14);   //1
-   DisplayFile(filehandle);
    insert(41, 15);   //1
-   DisplayFile(filehandle);
    insert(71, 16);   //1
-   DisplayFile(filehandle);
    insert(31, 17);   //1
-   DisplayFile(filehandle);
    insert(73, 18);   //3
    insert(99, 19);   //9
    insert(37, 20);   //7
@@ -130,8 +113,8 @@ int main(){
    DisplayFile(filehandle);
 
 
-   //7. Display the final data base
-   DisplayFile(filehandle);
+   // //7. Display the final data base
+   // DisplayFile(filehandle);
    // And Finally don't forget to close the file.
    close(filehandle);
    return 0;
