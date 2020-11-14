@@ -327,5 +327,6 @@ int deleteOffset(int fd, int Offset)
 		+ Fill Overflow, and then delete all.
 		+ Delete element does not exist.
 		+ Deleting offset in the middle of the chain (EVERYWHERE)
-		+ 
+		
+		+ ASK Ali to provide more test cases, and work on Ramzy's tests...
 */
