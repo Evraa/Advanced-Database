@@ -16,13 +16,13 @@
 #include <stdio.h>
 
 
-#define MBUCKETS  10					//Number of BUCKETS
-#define RECORDSPERBUCKET 2				//No. of records inside each Bucket
-#define BUCKETSIZE sizeof(Bucket)		//Size of the bucket (in bytes)
-#define OVERFLOWSIZE BUCKETSIZE*MBUCKETS
+#define MBUCKETS  10					            //Number of BUCKETS
+#define RECORDSPERBUCKET 2				         //No. of records inside each Bucket
+#define BUCKETSIZE sizeof(Bucket)		      //Size of the bucket (in bytes)
+#define OVERFLOWSIZE BUCKETSIZE*MBUCKETS     //Size of Overflow
 // #define FILESIZE BUCKETSIZE*MBUCKETS*2    //Size of the file 
-#define FILESIZE OVERFLOWSIZE*2    //Size of the file 
-
+#define FILESIZE OVERFLOWSIZE*2              //Size of the file 
+#define DATASIZE sizeof(DataItem)            //Size of Data
 
 
 //Data Record inside the file

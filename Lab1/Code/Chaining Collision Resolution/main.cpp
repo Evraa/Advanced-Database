@@ -42,16 +42,27 @@ int filehandle;   //handler for the database file
 
 int main(){
 
-//here we create a sample test to read and write to our database file
+   //here we create a sample test to read and write to our database file
 
-  //1. Create Database file or Open it if it already exists, check readfile.cpp
+   //1. Create Database file or Open it if it already exists, check readfile.cpp
    filehandle = createFile(FILESIZE,(char *)"chaining");
+   
   //2. Display the database file, check openAddressing.cpp
    // DisplayFile(filehandle);
 
   
   //3. Add some data in the table
    insert(1, 20);
+   insert(1, 20);
+   // insert(1, 20);
+   // insert(1, 20);
+   // insert(1, 20);
+   // insert(1, 20);
+   // insert(1, 20);
+   // insert(1, 20);
+   // insert(1, 20);
+   // insert(1, 20);
+   
    // insert(2, 70);
    // insert(42, 80);
    // insert(4, 25);

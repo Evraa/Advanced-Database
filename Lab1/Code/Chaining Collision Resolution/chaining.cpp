@@ -9,6 +9,7 @@ int hashCode(int key){
    return key % MBUCKETS;
 }
 
+// int lastOverflowIndex = -1;
 
 /* Functionality insert the data item into the correct position
  *          1. use the hash function to determine which bucket to insert into
@@ -42,13 +43,13 @@ int insertItem(int fd, DataItem item){
 	int Offset = startingOffset;						//Offset variable which we will use to iterate on the db
 	item.valid = 1;
 	int count = -1;										//# Records we span in order to find an empty space
-	int overflow = 0;
+	int overflowFlag = 0;
 	
 	//Main Loop
 	RESEEK:
 	count++;
 	//read data at offset
-	ssize_t read_result = pread(fd,&data,sizeof(DataItem), Offset);
+	ssize_t read_result = pread(fd,&data,DATASIZE, Offset);
 	//Error occured...
     if(read_result <= 0)
 		return -1;
@@ -56,33 +57,106 @@ int insertItem(int fd, DataItem item){
 	//Deleted or Unused place for data.
     else if (data.valid == 0) 
 	{
-		//Write your item at offset.
-    	pwrite(fd, &item, sizeof(DataItem), Offset);
 		//Get the last offset of that bucket starting offset
-		int lastOffset = startingOffset + ((RECORDSPERBUCKET-1)*sizeof(DataItem));
-		printf("Hey Ev: starting offset is: %d,  Last offset is: %d \n", startingOffset, lastOffset);
-		//check if the data written is at overflow and last offset is assigned to -1
-		ssize_t read_result_2 = pread(fd, &data, sizeof(DataItem), lastOffset);
-		if (data.pointer_index == -1 && Offset >= OVERFLOWSIZE)
+		int lastOffset = startingOffset + ((RECORDSPERBUCKET-1)*DATASIZE);
+		//if offset occurs at OVERFLOW, create a pointer to it
+		if (Offset >= OVERFLOWSIZE)
 		{
-			data.pointer_index = Offset;
-			pwrite(fd, &data, sizeof(DataItem), lastOffset);
-		}
+			//check if the data written is at overflow and last offset is assigned to -1
+			ssize_t read_result_2 = pread(fd, &data, DATASIZE, lastOffset);
+			//if that last data points to -1, then assign it
+			if (data.pointer_index == -1)
+			{
+				//make sure next points to null.
+				item.pointer_index = -1;
+				//Write your item at offset.
+    			pwrite(fd, &item, DATASIZE, Offset);
+				//last element of the bucket points to chain
+				data.pointer_index = Offset;
+				pwrite(fd, &data, DATASIZE, lastOffset);
+			}
+			else
+			{
+				//chaining logic
+				//Search for an Empty place
+				//if not, return -1
+				struct DataItem chainData;
+				ssize_t read_result_offset = pread(fd, &chainData, DATASIZE, Offset);
+				count++;
+				int checkPoint = Offset;
+				while (chainData.pointer_index != 0)
+				{
+					Offset += DATASIZE;
+					if (Offset == checkPoint)
+						return -1;
+					
+					if (Offset >= FILESIZE)
+						Offset = OVERFLOWSIZE;
+					ssize_t read_result_offset = pread(fd, &chainData, DATASIZE, Offset);
+					count++;
+				}
+				//make sure next points to null.
+				item.pointer_index = -1;
+				//Write your item at empty offset.
+    			pwrite(fd, &item, DATASIZE, Offset);
 
+				//Search for last element of that chain, to point to offset
+				int prevToLastOffset = lastOffset;
+				lastOffset = data.pointer_index;
+				while (lastOffset != -1)
+				{
+					ssize_t read_result_2 = pread(fd, &data, DATASIZE, lastOffset);
+					count++;
+					prevToLastOffset = lastOffset;
+					lastOffset = data.pointer_index;
+				}
+				data.pointer_index = Offset;
+				pwrite(fd, &data, DATASIZE, prevToLastOffset);
+			}
+			
+		}
+		else
+		{
+			if (Offset != lastOffset)
+			{
+				//make sure next points to next one...needed in delete and search.
+				item.pointer_index = Offset+DATASIZE; //next
+				//Write your item at offset.
+    			pwrite(fd, &item, DATASIZE, Offset);
+			}
+			else
+			{
+				//it is the last element of the bucket, make sure it points to null.
+				item.pointer_index = -1;
+				//Write your item at offset.
+    			pwrite(fd, &item, DATASIZE, Offset);
+			}
+			
+		}
+		
 		return count;
     }	
 	else
-	{ 
-		Offset  += sizeof(DataItem);  //move the offset to next record
-		if(Offset >= (startingOffset + BUCKETSIZE) && overflow ==0 )
-			{	
-				overflow = 1;
-				Offset = OVERFLOWSIZE; //edit here
-				goto RESEEK;
-			} else
-				if(overflow == 1 && Offset >= FILESIZE) {
+	{
+		//Find first empty place within the bucket
+		//	OR chain and add to last
+		//	OR Error (Filesize exceeded)
+		
+		Offset  += DATASIZE;  //move the offset to next record
+		if(Offset >= (startingOffset + BUCKETSIZE) && overflowFlag == 0)
+		{	
+			overflowFlag = 1;
+			Offset = OVERFLOWSIZE;
+			goto RESEEK;
+		} 
+		else
+		{
+			if(overflowFlag == 1 && Offset >= FILESIZE)
+			{
+				printf("File Limit Exceeded, no more Capacity in the Overflow\n");
 				return -1;
 			}
+		}
 		goto RESEEK;
     }
 }
@@ -193,7 +267,7 @@ int DisplayFile(int fd){
 			printf("Overflow, Offset %d:~\n", Offset);
 		} else {
 			pread(fd,&data,sizeof(DataItem), Offset);
-			printf("Overflow, Offset: %d, Data: %d, key: %d\n", Offset, data.data, data.key);
+			printf("Overflow, Offset: %d, Data: %d, key: %d, points to: %d\n", Offset, data.data, data.key,data.pointer_index);
 					 count++;
 		}
 	}
