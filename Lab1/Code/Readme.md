@@ -1,8 +1,7 @@
 To run the program
 
---either create a c++ project in eclipse and use it
+make
 
-or use the following command line
+when finished
 
-g++ *.cpp -o output
-
+make clean

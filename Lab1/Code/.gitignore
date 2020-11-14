@@ -2,3 +2,5 @@
 */output
 */.vscode
 */chaining
+old_files
+*/*.o
