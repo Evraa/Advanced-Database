@@ -286,25 +286,34 @@ int DisplayFile(int fd){
  */
 int deleteOffset(int fd, int Offset)
 {
+	printf("Deleting Element at Offset: %d\n",Offset);
 	struct DataItem dataIter;
 	struct DataItem dataIter_2;
 	ssize_t read_result = pread(fd, &dataIter, DATASIZE, Offset);
 
 	while (dataIter.pointer_index != -1)
 	{
-		//update
-		Offset = dataIter.pointer_index;
 		ssize_t read_result_2 = pread(fd, &dataIter_2, DATASIZE, dataIter.pointer_index);
-		dataIter.data = dataIter_2.data;
-		dataIter.pointer_index = dataIter_2.pointer_index;
+		dataIter.data = dataIter_2.data;	
+
+		int temp = dataIter.pointer_index;
+
+		if (dataIter_2.pointer_index == -1)
+			dataIter.pointer_index = -1;
+
+		pwrite(fd,&dataIter,sizeof(DataItem), Offset);
+		//update
+		Offset = temp;
+		
 		ssize_t read_result = pread(fd, &dataIter, DATASIZE, Offset);
 		
 	}
-
+	printf("Ya Ev Deleting at offset: %d\n",Offset);
 	struct DataItem dummyItem;
 	dummyItem.valid = 0;
 	dummyItem.key = -1;
 	dummyItem.data = 0;
+	dummyItem.pointer_index = 0;
 	int result = pwrite(fd,&dummyItem,sizeof(DataItem), Offset);
 
 	return result;

@@ -53,6 +53,9 @@ int main(){
   
   //3. Add some data in the table
    insert(1, 20);
+   insert(1, 41);
+   DisplayFile(filehandle);
+   deleteItem(1);
    // insert(1, 20);
    // insert(1, 20);
    // insert(1, 20);
