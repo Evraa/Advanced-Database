@@ -53,9 +53,6 @@ int main(){
   
   //3. Add some data in the table
    insert(1, 20);
-   insert(1, 20);
-   insert(2, 22);
-   
    // insert(1, 20);
    // insert(1, 20);
    // insert(1, 20);

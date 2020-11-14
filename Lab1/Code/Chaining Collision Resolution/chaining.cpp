@@ -118,20 +118,19 @@ int insertItem(int fd, DataItem item){
 		}
 		else
 		{
-			if (Offset != lastOffset)
+			if (Offset != startingOffset)
 			{
-				//make sure next points to next one...needed in delete and search.
-				item.pointer_index = Offset+DATASIZE; //next
-				//Write your item at offset.
-    			pwrite(fd, &item, DATASIZE, Offset);
+				int prevOffset = Offset - DATASIZE;
+				ssize_t read_result_2 = pread(fd, &data, DATASIZE, prevOffset);
+				count++;
+				data.pointer_index = Offset;
+				pwrite(fd, &data, DATASIZE, prevOffset);
 			}
-			else
-			{
-				//it is the last element of the bucket, make sure it points to null.
-				item.pointer_index = -1;
-				//Write your item at offset.
-    			pwrite(fd, &item, DATASIZE, Offset);
-			}
+			
+			//it is the last element of the bucket, make sure it points to null.
+			item.pointer_index = -1;
+			//Write your item at offset.
+			pwrite(fd, &item, DATASIZE, Offset);
 			
 		}
 		
@@ -143,7 +142,8 @@ int insertItem(int fd, DataItem item){
 		//	OR chain and add to last
 		//	OR Error (Filesize exceeded)
 		
-		Offset  += DATASIZE;  //move the offset to next record
+		Offset  += DATASIZE;  //move the offset to next record within the bucket
+
 		if(Offset >= (startingOffset + BUCKETSIZE) && overflowFlag == 0)
 		{	
 			overflowFlag = 1;
@@ -157,6 +157,7 @@ int insertItem(int fd, DataItem item){
 				printf("File Limit Exceeded, no more Capacity in the Overflow\n");
 				return -1;
 			}
+			
 		}
 		goto RESEEK;
     }
@@ -285,11 +286,27 @@ int DisplayFile(int fd){
  */
 int deleteOffset(int fd, int Offset)
 {
+	struct DataItem dataIter;
+	struct DataItem dataIter_2;
+	ssize_t read_result = pread(fd, &dataIter, DATASIZE, Offset);
+
+	while (dataIter.pointer_index != -1)
+	{
+		//update
+		Offset = dataIter.pointer_index;
+		ssize_t read_result_2 = pread(fd, &dataIter_2, DATASIZE, dataIter.pointer_index);
+		dataIter.data = dataIter_2.data;
+		dataIter.pointer_index = dataIter_2.pointer_index;
+		ssize_t read_result = pread(fd, &dataIter, DATASIZE, Offset);
+		
+	}
+
 	struct DataItem dummyItem;
 	dummyItem.valid = 0;
 	dummyItem.key = -1;
 	dummyItem.data = 0;
 	int result = pwrite(fd,&dummyItem,sizeof(DataItem), Offset);
+
 	return result;
 }
 
