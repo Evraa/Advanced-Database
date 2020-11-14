@@ -107,8 +107,8 @@ int searchItem(int fd,struct DataItem* item,int *count)
     }
     else if (data.valid == 1 && data.key == item->key) {
     	//I found the needed record
-    			item->data = data.data ;
-    			return Offset;
+			item->data = data.data ;
+			return Offset;
 
     } else { //not the record I am looking for
     		Offset +=sizeof(DataItem);  //move the offset to next record
@@ -144,10 +144,10 @@ int DisplayFile(int fd){
 		{ 	  perror("some error occurred in pread");
 			  return -1;
 		} else if (result == 0 || data.valid == 0 ) { //empty space found or end of file
-			printf("Bucket: %d, Offset %d:~\n",Offset/BUCKETSIZE,Offset);
+			printf("Bucket: %d, Offset %d:~\n",(int)(Offset/BUCKETSIZE),Offset);
 		} else {
 			pread(fd,&data,sizeof(DataItem), Offset);
-			printf("Bucket: %d, Offset: %d, Data: %d, key: %d\n",Offset/BUCKETSIZE,Offset,data.data,data.key);
+			printf("Bucket: %d, Offset: %d, Data: %d, key: %d\n",(int)(Offset/BUCKETSIZE),Offset,data.data,data.key);
 					 count++;
 		}
 	}

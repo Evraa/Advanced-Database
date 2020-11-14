@@ -39,39 +39,69 @@ int filehandle;   //handler for the database file
  * Functions in this file are just wrapper functions, the actual functions are in openAddressing.cpp
 
 */
+void testCase_1 (){
+   printf("Test Case 1:\n\t+ Adding elements at hash = 1, hash = 2 and various positions.\n\t+ Make sure to fill the File\n");
+   printf("########### End of Test Case 1 ###############\n");
+}
+
+void testCase_2 (){
+   printf("Test Case 2:\n\t+ Continuing after test case 1\n");
+   printf("\t+ Search for element at bottom of chain\n");
+   printf("\t+ Search for element at start of chain\n");
+   printf("\t+ Search for element at end of bucket\n");
+   printf("\t+ Search for element at start of bucket\n");
+   printf("########### End of Test Case 2 ###############\n");
+}
 
 int main(){
 
 //here we create a sample test to read and write to our database file
-
+   printf("\t\t############ OPEN ADDRESSING COLLISION RES############n\n");
+   
   //1. Create Database file or Open it if it already exists, check readfile.cpp
-   filehandle = createFile(FILESIZE,"openaddressing");
+   filehandle = createFile(FILESIZE,(char *)"openaddressing");
   //2. Display the database file, check openAddressing.cpp
-   DisplayFile(filehandle);
+   // DisplayFile(filehandle);
 
-  
+  //Test case 1
+   testCase_1();
+
   //3. Add some data in the table
-   insert(1, 20);
-   insert(2, 70);
-   insert(42, 80);
-   insert(4, 25);
-   insert(12, 44);
-   insert(14, 32);
-   insert(17, 11);
-   insert(13, 78);
-   insert(37, 97);
-   insert(11, 34);
-   insert(22, 730);
-   insert(46, 840);
-   insert(9, 83);
-   insert(21, 424);
-   insert(41, 115);
-   insert(71, 47);
-   insert(31, 92);
-   insert(73, 45);
-
-   //4. Display the database file again
+   insert(1, 1);     //1
+   insert(2, 2);     //2
+   insert(42, 3);    //2
+   insert(91, 4);    //1
+   insert(12, 5);    //2
+   insert(14, 6);    //4
+   insert(17, 7);    //7
+   insert(13, 8);    //3
+   insert(37, 9);    //7
+   insert(11, 10);   //1
+   insert(22, 11);   //2
+   insert(46, 12);   //6
+   insert(9, 13);    //9
+   insert(21, 14);   //1
+   insert(41, 15);   //1
+   insert(71, 16);   //1
+   insert(31, 17);   //1
+   insert(73, 18);   //3
+   insert(99, 19);   //9
+   insert(37, 20);   //7
+   insert(27, 21);   //7
+   insert(47, 22);   //7
+   insert(41, 23);   //1
+   insert(51, 24);   //1
+   insert(61, 25);   //1
+   insert(81, 26);   //1
+   insert(101, 27);  //1
+   insert(111, 28);  //1
+   insert(121, 29);  //1
+   insert(131, 30);  //1
+   insert(141, 31);  //1
+   insert(151, 32);  //1
    DisplayFile(filehandle);
+
+   
 
    //5. Search the database
    search(13);

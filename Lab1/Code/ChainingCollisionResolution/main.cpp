@@ -45,6 +45,7 @@ void testCase_1 (){
    printf("\t+ Delete item at the end of the chain.\n\t+ Delete item at the middle of the chain.\n");
    printf("\t+ Delete item at the start of the chain.\n\t+ Delete item at the end of Original Buckets.\n");
    printf("\t+ Delete item at the start of bucket\n");
+   printf("########### End of Test Case 1 ###############\n");
 }
 
 void testCase_2 (){
@@ -53,7 +54,9 @@ void testCase_2 (){
    printf("\t+ Search for element at start of chain\n");
    printf("\t+ Search for element at end of bucket\n");
    printf("\t+ Search for element at start of bucket\n");
+   printf("########### End of Test Case 2 ###############\n");
 }
+
 int main(){
 
    
@@ -63,7 +66,7 @@ int main(){
    filehandle = createFile(FILESIZE,(char *)"chaining");
 
    //2. Display the database file, check openAddressing.cpp
-   DisplayFile(filehandle);
+   // DisplayFile(filehandle);
 
 
    //3. Add some data in the table
@@ -102,23 +105,24 @@ int main(){
    
    //4. Display the database file again
    DisplayFile(filehandle);
-
+   
+   //Test case 1
    testCase_1();
    deleteItem(151);
    deleteItem(41);
    deleteItem(11);
    deleteItem(91);
    deleteItem(1);
+   DisplayFile(filehandle);
 
+   //Test case 2
    testCase_2();
-   //5. Search the database
-   
    search(47);
    search(27);
    search(17);
-   
-   //7. Display the final data base
    DisplayFile(filehandle);
+   
+   
    // And Finally don't forget to close the file.
    close(filehandle);
    return 0;

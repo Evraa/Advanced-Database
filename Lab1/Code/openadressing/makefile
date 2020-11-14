@@ -12,4 +12,4 @@ main.o: main.cpp
 	g++ -c main.cpp
 
 clean:
-	rm *.o openAddressing output
+	rm *.o openaddressing output
