@@ -43,7 +43,7 @@ struct Bucket {
 //Check the create File
 int createFile(int size, char *);
 
-//check the openAddressing File
+//check the chaining File
 int deleteItem(int key);
 int insertItem(int fd,DataItem item);
 int DisplayFile(int fd);

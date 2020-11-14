@@ -10,10 +10,9 @@ int hashCode(int key){
 
 int insertItem(int fd, DataItem item){
    //Definitions
-	struct DataItem data;   //a variable to read in it the records from the db
+	struct DataItem data;   							//a variable to read in it the records from the db
 	int hashIndex = hashCode(item.key);  				//calculate the Bucket index
 	int startingOffset = hashIndex*sizeof(Bucket);		//calculate the starting address of the bucket
-	//No need for that!
 	int Offset = startingOffset;						//Offset variable which we will use to iterate on the db
 	item.valid = 1;
 	int count = -1;										//# Records we span in order to find an empty space
