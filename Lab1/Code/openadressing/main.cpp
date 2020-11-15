@@ -85,19 +85,12 @@ int main(){
    total_count+= insert(73, 18);   //3
    total_count+= insert(99, 19);   //9
    total_count+= insert(37, 20);   //7
+   //These wont be added
    total_count+= insert(27, 21);   //7
    total_count+= insert(47, 22);   //7
    total_count+= insert(41, 23);   //1
    total_count+= insert(51, 24);   //1
    total_count+= insert(61, 25);   //1
-   total_count+= insert(81, 26);   //1
-   total_count+= insert(101, 27);  //1
-   total_count+= insert(111, 28);  //1
-   total_count+= insert(121, 29);  //1
-   total_count+= insert(131, 30);  //1
-   total_count+= insert(141, 31);  //1
-   total_count+= insert(151, 32);  //1
-   total_count+= insert(161, 1);     //1
    
    DisplayFile(filehandle);
 

@@ -89,38 +89,28 @@ int main(){
    total_count+= insert(71, 16);   //1
    total_count+= insert(31, 17);   //1
    total_count+= insert(73, 18);   //3
+   //these wont be added
    total_count+= insert(99, 19);   //9
    total_count+= insert(37, 20);   //7
    total_count+= insert(27, 21);   //7
    total_count+= insert(47, 22);   //7
    total_count+= insert(41, 23);   //1
-   total_count+= insert(51, 24);   //1
-   total_count+= insert(61, 25);   //1
-   total_count+= insert(81, 26);   //1
-   total_count+= insert(101, 27);  //1
-   total_count+= insert(111, 28);  //1
-   total_count+= insert(121, 29);  //1
-   total_count+= insert(131, 30);  //1
-   total_count+= insert(141, 31);  //1
-   total_count+= insert(151, 32);  //1
-   total_count+= insert(137, 20);   //7
-   total_count+= insert(127, 21);   //7
-   total_count+= insert(247, 22);   //7
-   total_count+= insert(237, 20);   //7
-   total_count+= insert(227, 21);   //7
-   total_count+= insert(347, 22);   //7
-   //These wont be added
-   total_count+= insert(337, 20);   //7
-   total_count+= insert(327, 21);   //7
-   total_count+= insert(447, 22);   //7
-   total_count+= insert(437, 20);   //7
-   total_count+= insert(427, 21);   //7
-   total_count+= insert(547, 22);   //7
-   total_count+= insert(537, 20);   //7
-   total_count+= insert(527, 21);   //7
-   total_count+= insert(647, 22);   //7
-   total_count+= insert(637, 20);   //7
-   total_count+= insert(627, 21);   //7
+
+   // total_count+= insert(51, 24);   //1
+   // total_count+= insert(61, 25);   //1
+   // total_count+= insert(81, 26);   //1
+   // total_count+= insert(101, 27);  //1
+   // total_count+= insert(111, 28);  //1
+   // total_count+= insert(121, 29);  //1
+   // total_count+= insert(131, 30);  //1
+   // total_count+= insert(141, 31);  //1
+   // total_count+= insert(151, 32);  //1
+   // //These wont be added
+   // total_count+= insert(137, 20);   //7
+   // total_count+= insert(127, 21);   //7
+   // total_count+= insert(247, 22);   //7
+   // total_count+= insert(237, 20);   //7
+   // total_count+= insert(227, 21);   //7
    
 
    printf("########## For Comparison: #############\n");

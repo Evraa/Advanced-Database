@@ -41,14 +41,14 @@ int insertItem(int fd, DataItem item){
 	int startingOffset = hashIndex*sizeof(Bucket);		//calculate the starting address of the bucket
 	int Offset = startingOffset;						//Offset variable which we will use to iterate on the db
 	item.valid = 1;
-	int count = -1;
+	int count = 0;
 
 	RESEEK:
 	count++;
 	ssize_t read_result = pread(fd,&data,sizeof(DataItem), Offset);
 
     if(read_result <= 0)
-		return count;
+		return -1;
 
     else if (data.valid == 0) 
 	{
@@ -65,6 +65,7 @@ int insertItem(int fd, DataItem item){
 				goto RESEEK;
 			} else
 				if(rewind == 1 && Offset >= startingOffset) {
+				printf ("No more space.\n");
 				return count;
 			}
 		goto RESEEK;
