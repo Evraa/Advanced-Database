@@ -65,7 +65,7 @@ int insertItem(int fd, DataItem item){
 				goto RESEEK;
 			} else
 				if(rewind == 1 && Offset >= startingOffset) {
-				return -1;
+				return count;
 			}
 		goto RESEEK;
     }

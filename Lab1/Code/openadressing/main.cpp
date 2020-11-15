@@ -8,7 +8,7 @@
 
 #include "readfile.h"
 
-void insert(int key,int data);
+int insert(int key,int data);
 int deleteItem(int key);
 struct DataItem * search(int key);
 
@@ -41,7 +41,7 @@ int filehandle;   //handler for the database file
 */
 void testCase_1 (){
    printf("Test Case 1:\n\t+ Adding elements at hash = 1, hash = 2 and various positions.\n\t+ Make sure to fill the File\n");
-   printf("\t+ Search for keys at their buckets, and outside it: 13 and 73");
+   printf("\t+ Search for keys at their buckets, and outside it: 13 and 73\n");
    printf("########### End of Test Case 1 ###############\n");
 }
 
@@ -62,46 +62,55 @@ int main(){
   //2. Display the database file, check openAddressing.cpp
    // DisplayFile(filehandle);
    
+   int total_count = 0;
+
   //3. Add some data in the table
-   insert(1, 1);     //1
-   insert(2, 2);     //2
-   insert(42, 3);    //2
-   insert(91, 4);    //1
-   insert(12, 5);    //2
-   insert(14, 6);    //4
-   insert(17, 7);    //7
-   insert(13, 8);    //3
-   insert(37, 9);    //7
-   insert(11, 10);   //1
-   insert(22, 11);   //2
-   insert(46, 12);   //6
-   insert(9, 13);    //9
-   insert(21, 14);   //1
-   insert(41, 15);   //1
-   insert(71, 16);   //1
-   insert(31, 17);   //1
-   insert(73, 18);   //3
-   insert(99, 19);   //9
-   insert(37, 20);   //7
-   insert(27, 21);   //7
-   insert(47, 22);   //7
-   insert(41, 23);   //1
-   insert(51, 24);   //1
-   insert(61, 25);   //1
-   insert(81, 26);   //1
-   insert(101, 27);  //1
-   insert(111, 28);  //1
-   insert(121, 29);  //1
-   insert(131, 30);  //1
-   insert(141, 31);  //1
-   insert(151, 32);  //1
+   total_count+= insert(1, 1);     //1
+   total_count+= insert(2, 2);     //2
+   total_count+= insert(42, 3);    //2
+   total_count+= insert(91, 4);    //1
+   total_count+= insert(12, 5);    //2
+   total_count+= insert(14, 6);    //4
+   total_count+= insert(22, 7);    //2
+   total_count+= insert(13, 8);    //3
+   total_count+= insert(37, 9);    //7
+   total_count+= insert(11, 10);   //1
+   total_count+= insert(22, 11);   //2
+   total_count+= insert(46, 12);   //6
+   total_count+= insert(9, 13);    //9
+   total_count+= insert(21, 14);   //1
+   total_count+= insert(41, 15);   //1
+   total_count+= insert(71, 16);   //1
+   total_count+= insert(31, 17);   //1
+   total_count+= insert(73, 18);   //3
+   total_count+= insert(99, 19);   //9
+   total_count+= insert(37, 20);   //7
+   total_count+= insert(27, 21);   //7
+   total_count+= insert(47, 22);   //7
+   total_count+= insert(41, 23);   //1
+   total_count+= insert(51, 24);   //1
+   total_count+= insert(61, 25);   //1
+   total_count+= insert(81, 26);   //1
+   total_count+= insert(101, 27);  //1
+   total_count+= insert(111, 28);  //1
+   total_count+= insert(121, 29);  //1
+   total_count+= insert(131, 30);  //1
+   total_count+= insert(141, 31);  //1
+   total_count+= insert(151, 32);  //1
+   total_count+= insert(161, 1);     //1
+   
    DisplayFile(filehandle);
 
-   
+   printf("########## For Comparison: #############\n");
+   printf("\tTotal count of readings = %d\n",total_count);
+   printf("########## End of Comparison #############\n");
+
    testCase_1();
    //5. Search the database
    search(13);    //at the end of its bucket
    search(73);    //outside its bucket
+   search(2214);  //For comparison
+
    DisplayFile(filehandle);
 
    testCase_2();
@@ -125,13 +134,14 @@ int main(){
     Input: key, data
     Output: print statement with the no. of comparisons
 */
-void insert(int key,int data){
+int insert(int key,int data){
      struct DataItem item ;
      item.data = data;
      item.key = key;
      item.valid = 1;
      int result= insertItem(filehandle,item);  //TODO: implement this function in openAddressing.cpp
      printf("Insert: No. of searched records:%d\n",abs(result));
+     return result;
 }
 
 /* Functionality: search for a data in the table using the key

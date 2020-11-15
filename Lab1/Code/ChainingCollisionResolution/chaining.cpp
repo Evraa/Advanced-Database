@@ -15,7 +15,7 @@ int insertItem(int fd, DataItem item){
 	int startingOffset = hashIndex*sizeof(Bucket);		//calculate the starting address of the bucket
 	int Offset = startingOffset;						//Offset variable which we will use to iterate on the db
 	item.valid = 1;
-	int count = -1;										//# Records we span in order to find an empty space
+	int count = 0;										//# Records we span in order to find an empty space
 	int overflowFlag = 0;
 	
 	//Main Loop
@@ -128,7 +128,7 @@ int insertItem(int fd, DataItem item){
 			if(overflowFlag == 1 && Offset >= FILESIZE)
 			{
 				printf("File Limit Exceeded, no more Capacity in the Overflow\n");
-				return -1;
+				return count;
 			}
 			
 		}

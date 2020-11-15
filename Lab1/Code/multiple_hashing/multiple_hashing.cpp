@@ -43,7 +43,7 @@ int insertItem(int fd, DataItem item){
 	int num_collisions = 0;
 	bool open_addressing = false;
 	item.valid = 1;
-	int count = -1;
+	int count = 0;
 	bool lastIndexReached = false;						//When this becomes true, it means no more place at the bucket is available
 	int lastOffset = startingOffset + ((RECORDSPERBUCKET-1)*sizeof(DataItem)); //Offset of the last element in the Bucket.
 	
@@ -52,7 +52,7 @@ int insertItem(int fd, DataItem item){
 	ssize_t read_result = pread(fd,&data,sizeof(DataItem), Offset);
 
     if(read_result <= 0)
-		return count;
+		return -1;
 
     else if (data.valid == 0) 
 	{
@@ -89,10 +89,10 @@ int insertItem(int fd, DataItem item){
 			goto RESEEK;
 		} 
 		else if(rewind == 1 && Offset >= startingOffset) 
-			{
-				printf ("File size exceeded, Can't Add more.\n");
-				return -1;
-			}
+		{
+			printf ("File size exceeded, Can't Add more.\n");
+			return count;
+		}
 
 		goto RESEEK;
     }
