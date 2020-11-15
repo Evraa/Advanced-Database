@@ -175,6 +175,7 @@ int searchItem(int fd,struct DataItem* item,int *count)
 			item->data = data.data ;
 			return startingOffset;
 		}
+		if (data.valid == 0)	break;
 		//else, keep looping
 		startingOffset = data.pointer_index;
 	}

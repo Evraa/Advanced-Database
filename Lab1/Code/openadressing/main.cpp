@@ -109,6 +109,7 @@ int main(){
    deleteItem(1);    //start of its bucket
    deleteItem(91);   //end of its bucket
    deleteItem(11);   //outside its bucket
+   deleteItem(70);
    DisplayFile(filehandle);
 
    // And Finally don't forget to close the file.

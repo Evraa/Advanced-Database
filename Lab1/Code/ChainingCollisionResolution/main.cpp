@@ -108,6 +108,7 @@ int main(){
    
    //Test case 1
    testCase_1();
+   deleteItem(161);
    deleteItem(151);
    deleteItem(41);
    deleteItem(11);
