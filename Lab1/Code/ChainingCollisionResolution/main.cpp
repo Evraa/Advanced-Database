@@ -90,11 +90,11 @@ int main(){
    total_count+= insert(31, 17);   //1
    total_count+= insert(73, 18);   //3
    //these wont be added
-   total_count+= insert(99, 19);   //9
+   total_count+= insert(137, 19);   //7
    total_count+= insert(37, 20);   //7
    total_count+= insert(27, 21);   //7
    total_count+= insert(47, 22);   //7
-   total_count+= insert(41, 23);   //1
+   total_count+= insert(127, 23);   //7
 
    // total_count+= insert(51, 24);   //1
    // total_count+= insert(61, 25);   //1
@@ -117,25 +117,30 @@ int main(){
    printf("\tTotal count of readings = %d\n",total_count);
    printf("########## End of Comparison #############\n");
    
+   search(127);
+   DisplayFile(filehandle);
+   deleteItem(17);
+
    //4. Display the database file again
    DisplayFile(filehandle);
    
    //Test case 1
-   testCase_1();
-   deleteItem(161);
-   deleteItem(151);
-   deleteItem(41);
-   deleteItem(11);
-   deleteItem(91);
-   deleteItem(1);
-   DisplayFile(filehandle);
+   // testCase_1();
+   // deleteItem(161);
+   // deleteItem(151);
+   // deleteItem(41);
+   // deleteItem(11);
+   // deleteItem(91);
+   // deleteItem(1);
+   // DisplayFile(filehandle);
 
    //Test case 2
-   testCase_2();
-   search(47);
-   search(27);
-   search(17);
-   DisplayFile(filehandle);
+   // testCase_2();
+   // search(47);
+   // search(27);
+   // search(17);
+   
+   // DisplayFile(filehandle);
    
    
    // And Finally don't forget to close the file.

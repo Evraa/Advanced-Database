@@ -303,6 +303,8 @@ int deleteOffset(int fd, int Offset)
 		ssize_t read_result_2 = pread(fd, &dataIter_2, DATASIZE, dataIter.pointer_index);
 		//Copy data of the fast runner to slow runner
 		dataIter.data = dataIter_2.data;	
+		dataIter.key = dataIter_2.key;	
+		
 		//keep second pointer as a temp.
 		int temp = dataIter.pointer_index;
 		//if fast runner is the end, then slow runner WILL be the end.

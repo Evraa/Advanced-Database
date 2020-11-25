@@ -16,7 +16,7 @@
 #include <stdio.h>
 
 
-#define MBUCKETS  5					            //Number of BUCKETS
+#define MBUCKETS  10					            //Number of BUCKETS
 #define RECORDSPERBUCKET 2				         //No. of records inside each Bucket
 #define BUCKETSIZE sizeof(Bucket)		      //Size of the bucket (in bytes)
 #define OVERFLOWSIZE BUCKETSIZE*MBUCKETS     //Size of Overflow
