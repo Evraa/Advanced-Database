@@ -41,10 +41,14 @@ using namespace std;
       //if local depth = global depth -> split bucket AND double the directory AND Rehash
 
 
-#define M 3                         //size of each bucket, when exceeding it (overflow), directory is doubled.
-#define hash_value 32               //used in hash function, to map the key of the data
-#define K (int)log2(hash_value)     //maximum number of bits in directory, ie. directory cant exceed 2^32
-#define FILESIZE (hash_value*(1 + M*(8))) + (hash_value* ((K*4) + 4)) //File Size
+#define M 3                                        //size of each bucket, when exceeding it (overflow), directory is doubled.
+#define hash_value 32                              //used in hash function, to map the key of the data
+#define MAX_DIRECT_SIZE hash_value                 //we can't have more than that; cuz K mod 32 only results in [32] values.
+#define K (int)log2(hash_value)                    //maximum number of bits in directory, ie. directory cant exceed 2^32
+#define DATASIZE sizeof(DataItem)                  //Size of Data
+#define DIRECTORY_SIZE (hash_value* 8)             //Directory size = max of 32 places * [pointer size = 8]
+#define BUCKETS_SIZE (hash_value*sizeof(Bucket))   //obv.
+#define FILESIZE  BUCKETS_SIZE +  DIRECTORY_SIZE   //File Size
 
 
 //holds data item with integer data and a key
@@ -69,9 +73,9 @@ int createFile(int size, char *);
 
 //check the chaining File
 // int deleteItem(int data);
-int insertItem(int fd, DataItem item, map<vector<int>,int>* Direct);
-int deleteItem(int filehandle, int key,map<vector<int>,int>* Direct);
-int searchItem(int filehandle, int key,map<vector<int>,int>* Direct);
+int insertItem(int fd, DataItem item, vector<Bucket*> * Directory);
+int deleteItem(int filehandle, int key,vector<Bucket*> * Directory);
+int searchItem(int filehandle, int key,vector<Bucket*> * Directory);
 
 int DisplayFile(int fd);
 

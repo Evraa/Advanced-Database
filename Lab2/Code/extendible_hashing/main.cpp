@@ -14,8 +14,9 @@ struct DataItem * search(int key);
 
 
 //Global Variables
-map <vector<int>, int> Direct;
-int filehandle;   //handler for the database file
+
+vector<Bucket*> Directory;    //Main Directory Vector
+int filehandle;               //handler for the database file
 
 /* DBMS (DataBase Management System) needs to store its data in something non-volatile
  * so it stores its data into files (manteqy :)).
@@ -49,8 +50,10 @@ int main(){
    
    //1. Create Database file or Open it if it already exists, check readfile.cpp
    filehandle = createFile(FILESIZE,(char *)"extendible");
-   
-   
+   Bucket* bucky = new Bucket;
+   printf("%p\n", bucky);
+   printf("%lu\n", sizeof(bucky));
+
    // And Finally don't forget to close the file.
    close(filehandle);
    return 0;
@@ -69,11 +72,11 @@ int insert(int key,int data){
       struct DataItem item ;
       item.data = data;
       item.key = key;
-      int state = insertItem(filehandle,item);  //TODO: implement this function in openAddressing.cpp
+      int state = insertItem(filehandle,item,&Directory);  //TODO: implement this function in openAddressing.cpp
       switch (state)
       {
       case -1:
-         printf ("Error 201: An error occured while adding dat: %d with key: %d\n",data,key);
+         printf ("Error 201: An UNKNOWN error occured while adding data: %d with key: %d\n",data,key);
          break;
       case 0:
          printf("Value: %d \twith key: %d\t added with no splitting nor doubling\n",data,key);
@@ -83,6 +86,9 @@ int insert(int key,int data){
          break;
       case 2:
          printf("Value: %d \twith key: %d\t added with Splitting AND Doubling\n",data,key);
+         break;
+      case 3:
+         printf("Error 202: FILE SIZE LIMIT EXCEEDED at data: %d with key: %d\n",data,key);
          break;
       }
       return state;

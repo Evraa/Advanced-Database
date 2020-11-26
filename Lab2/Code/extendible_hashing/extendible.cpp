@@ -54,11 +54,12 @@ int debinarize(vector<int> vec){
 }
 
 
-int insertItem(int fd, DataItem item, map<vector<int>,int>* Direct){
+int insertItem(int fd, DataItem item, vector<Bucket*> * Directory){
 	//TODO: implement the insert function.
 
+	vector<int> binarized_hashed_key = binarize(hashCode(item.key));
+	int GD = (int)log2(Directory->size()); //global depth
 	
-
 
 	return 0;
 }
