@@ -101,14 +101,39 @@ int insertItem(int fd, DataItem item, vector<Bucket*>* Directory){
 		{
 			if (main_bucket->local_depth < GD)
 			{
-				//just splitting and reshshing
+				//Task: Just splitting and reshshing
 
 				//create new guy.
 				Bucket* secondary_bucket = new Bucket;
 				//adjust new local depths.
 				main_bucket->local_depth += 1;
 				secondary_bucket->local_depth = main_bucket->local_depth;
-				
+				//Task: Rehash
+
+				//temp holder
+				vector<DataItem> temp_data_holder = main_bucket->data_array;
+				//add the new value we wish to add
+				temp_data_holder.push_back(item);
+				//empty the main bucket data
+				main_bucket->data_array.clear();
+				//main holder boundry
+				int main_bucket_boundry = castIt(hashed_key,main_bucket->local_depth);
+				//secondary holder boundry
+				int sec_bucket_boundry = main_bucket_boundry + GD;
+				//rehash all values
+				for (int i=0; i<temp_data_holder.size(); i++)
+				{
+					int casted_hashed_key = castIt(hashCode(temp_data_holder[i].key),main_bucket->local_depth);
+					if (casted_hashed_key == main_bucket_boundry)
+						main_bucket->data_array.push_back(temp_data_holder[i]);
+					else if (casted_hashed_key == sec_bucket_boundry)
+						secondary_bucket->data_array.push_back(temp_data_holder[i]);
+					else
+						printf ("BREAKPOINT FOR EV ... Delete when done\n\n");
+				}
+				//Task: Create Directory Pointers
+				(*Directory)[main_bucket_boundry] = main_bucket;
+				(*Directory)[sec_bucket_boundry] = secondary_bucket;
 				
 			}
 			else
