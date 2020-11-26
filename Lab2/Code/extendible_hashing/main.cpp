@@ -67,6 +67,8 @@ int main(){
          0  : value added with no splitting nor doubling
          1  : value added with splitting but no doubling
          2  : value added with splitting and doubling 
+         3  : max size reached
+         4  : very special one; if you inserted the same value untill directory can't be split!
 */
 int insert(int key,int data){
       struct DataItem item ;
@@ -88,7 +90,10 @@ int insert(int key,int data){
          printf("Value: %d \twith key: %d\t added with Splitting AND Doubling\n",data,key);
          break;
       case 3:
-         printf("Error 202: FILE SIZE LIMIT EXCEEDED at data: %d with key: %d\n",data,key);
+         printf("Error 203: FILE SIZE LIMIT EXCEEDED at data: %d with key: %d\n",data,key);
+         break;
+      case 4:
+         printf("Error 204: Special Error; M keys exist, can't add more of data: %d with key: %d\n",data,key);
          break;
       }
       return state;

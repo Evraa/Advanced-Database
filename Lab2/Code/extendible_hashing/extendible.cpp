@@ -54,14 +54,75 @@ int debinarize(vector<int> vec){
 }
 
 
-int insertItem(int fd, DataItem item, vector<Bucket*> * Directory){
+bool allAreTheSame(vector<DataItem> buck_array, int hashy)
+{
+	for (int i=0; i<buck_array.size(); i++)
+	{
+		if (hashCode(buck_array[i].key) != hashy)
+			return false;
+	}
+	return true;
+}
+/**
+ * Input: value in range [0:hash_value-1] and Depth
+ * Output: returns the down casted value
+ * 
+ * Ex: value 9 and depth = 2
+ * 		binarized 9 is 01001
+ * 		casted 9 is 1 .. thus 1 is returned.
+*/
+int castIt (int value, int depth)
+{
+	int base = 0;
+	int result = 0;
+	vector<int> bin_vec = binarize(value);
+	for (int i=0; i<depth; i++)
+	{
+		if (bin_vec[i] == 1)
+			result += pow(2,base);
+		base += 1;
+	}
+	return result;
+}
+
+
+int insertItem(int fd, DataItem item, vector<Bucket*>* Directory){
 	//TODO: implement the insert function.
+	int hashed_key = hashCode(item.key);		//int hashed key
+	int GD = (int)log2(Directory->size()); 		//global depth
+	Bucket* main_bucket = (*Directory)[castIt(hashed_key,GD)];  //that exact bucket shall hold item.key's value.
 
-	vector<int> binarized_hashed_key = binarize(hashCode(item.key));
-	int GD = (int)log2(Directory->size()); //global depth
-	
+	if (main_bucket->data_array.size() == M)
+	{
+		//OVERFLOW encountered
+		if (allAreTheSame(main_bucket->data_array, hashed_key))
+			return 4;
+		else
+		{
+			if (main_bucket->local_depth < GD)
+			{
+				//just splitting and reshshing
 
-	return 0;
+				//create new guy.
+				Bucket* secondary_bucket = new Bucket;
+				//adjust new local depths.
+				main_bucket->local_depth += 1;
+				secondary_bucket->local_depth = main_bucket->local_depth;
+				
+				
+			}
+			else
+			{
+				//doubling, spliting, and reshashing
+			}
+		}
+	}
+	else
+	{
+		//we are at el-Saleem
+		main_bucket->data_array.push_back(item);
+		return 0;
+	}
 }
 
 int deleteItem(int filehandle, int key,map<vector<int>,int>* Direct){
