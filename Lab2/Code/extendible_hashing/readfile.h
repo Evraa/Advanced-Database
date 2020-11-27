@@ -41,7 +41,7 @@ using namespace std;
       //if local depth = global depth -> split bucket AND double the directory AND Rehash
 
 
-#define M 3                                        //size of each bucket, when exceeding it (overflow), directory is doubled.
+#define M 2                                        //size of each bucket, when exceeding it (overflow), directory is doubled.
 #define hash_value 32                              //used in hash function, to map the key of the data
 #define MAX_DIRECT_SIZE hash_value                 //we can't have more than that; cuz K mod 32 only results in [32] values.
 #define K (int)log2(hash_value)                    //maximum number of bits in directory, ie. directory cant exceed 2^32
@@ -71,12 +71,12 @@ struct Bucket
 int createFile(int size, char *, bool* exist);   //from old part
 
 //check the chaining File
-int insertItem(int fd, DataItem item, vector<Bucket*> * Directory);     //not tested yet
+int insertItem(int fd, DataItem item, vector<Bucket*> & Directory);     //tested clean
 int deleteItem(int filehandle, int key,vector<Bucket*> * Directory);    //not tested yet
 int searchItem(int filehandle, int key,vector<Bucket*> * Directory);    //not tested yet
 int DisplayFile(int fd);                                                //not tested yet
 vector<int> binarize (int value);                                       //tested clean
 int debinarize(vector<int> vec);                                        //tested clean
-void init(vector<Bucket*> * Directory, bool exist);                     //not tested yet
-
+void init(vector<Bucket*> & Directory, bool exist);                     //not tested yet
+void print_directory(vector<Bucket*>& Directory);                       //tested clean
 #endif /* READFILE_H_ */

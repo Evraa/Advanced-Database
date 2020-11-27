@@ -8,11 +8,10 @@
 
 #include "readfile.h"
 
-
 //Global Variables
-
-vector<Bucket*> Directory;    //Main Directory Vector with max size=hash_value
 int filehandle;               //handler for the database file
+int insert(int key,int data);
+vector<Bucket*> Directory;    //Main Directory Vector with max size=hash_value
 
 /* DBMS (DataBase Management System) needs to store its data in something non-volatile
  * so it stores its data into files (manteqy :)).
@@ -40,7 +39,7 @@ int filehandle;               //handler for the database file
 */
 
 int main(){
-
+   
    
    printf("\t\t############ EXTENDIBLE HASHING ##############\n\n");
    
@@ -48,12 +47,22 @@ int main(){
    bool exist = false;
    filehandle = createFile(FILESIZE,(char *)"extendible", &exist);
    //2. Init the Directory
-   init(&Directory, exist);
+   init(Directory, exist);
 
-  
-   // printf("%lu\n", sizeof(Directory));
-   printf("%d\n", (Directory[0]->local_depth));
-   printf("%d\n", (Directory[1]->local_depth));
+   printf("Ev %d\n",Directory[0]->local_depth); //11
+   printf("Ev %d\n",Directory[1]->local_depth); //22
+   // printf("%d\n",Directory[2]->local_depth); //33
+
+   // printf("%lu\n", (Directory.size())); //debug
+   insert(0,0);   
+   insert(12,1);
+   insert(15,2);
+   insert(13,3);
+   insert(33,4);
+   insert(22,5);
+   insert(10,6);
+   insert(1,7);
+
    
 
    // And Finally don't forget to close the file.
@@ -71,12 +80,22 @@ int main(){
          2  : value added with splitting and doubling 
          3  : max size reached
          4  : very special one; if you inserted the same value untill directory can't be split!
+         5  : any unexpected error.
 */
 int insert(int key,int data){
+   
       struct DataItem item ;
       item.data = data;
       item.key = key;
-      int state = insertItem(filehandle,item,&Directory);  //TODO: implement this function in openAddressing.cpp
+
+      printf("Kareem %d\n",Directory[0]->local_depth);
+      printf("Kareem %d\n",Directory[1]->local_depth);
+      // printf("%d\n",(*Di)[2]->local_depth);
+
+      // int state = insertItem(filehandle,item,Directory);  //TODO: implement this function in openAddressing.cpp
+      int state = 0;
+      printf("Got here %d\n", state);
+      
       switch (state)
       {
       case -1:
@@ -101,5 +120,6 @@ int insert(int key,int data){
          printf("Error 205: Unexpected Error at All; Data: %d with key: %d\n",data,key);
          break;
       }
+      print_directory(Directory);
       return state;
 }

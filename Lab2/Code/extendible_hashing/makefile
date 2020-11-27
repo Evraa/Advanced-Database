@@ -1,4 +1,4 @@
-run: output
+run: output 
 	./output
 	
 output: readfile.o main.o extendible.o 
