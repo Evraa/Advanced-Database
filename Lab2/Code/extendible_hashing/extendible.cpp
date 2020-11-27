@@ -85,9 +85,37 @@ int castIt (int value, int depth)
 	return result;
 }
 
+/**
+ * If file is already exist, we gotta read the directory info from it
+ * If it's new/clear file, a directory has to be created with two empty bickets
+ * 
+ * Input: Directory pointer from main, which is always empty at first...even if the file has old data.
+*/
+void init(vector<Bucket*> * Directory, bool exist)
+{
+	if (exist)
+	{
+		//read it from file
+		//note, file may exist and directory is not, wo you gotta handle it somewhere
+		return;
+	}
+	else
+	{
+		//Fill the directory sent
+		Bucket buck_1,buck_2;
+		buck_1.local_depth = 1;
+		buck_2.local_depth = 1;
+		Directory->push_back(&buck_1);
+		Directory->push_back(&buck_2);
+		return;
+	}
+}
 
 int insertItem(int fd, DataItem item, vector<Bucket*>* Directory){
 	//TODO: implement the insert function.
+	if (item.key >= hash_value)
+		return 5;
+		
 	int hashed_key = hashCode(item.key);						//int hashed key
 	int GD = (int)log2(Directory->size()); 						//global depth
 	Bucket* main_bucket = (*Directory)[castIt(hashed_key,GD)];  //that exact bucket shall hold item.key's value.
@@ -101,66 +129,81 @@ int insertItem(int fd, DataItem item, vector<Bucket*>* Directory){
 		//so this is not file size error, nor writing error, this a Special error.	
 		if (allAreTheSame(main_bucket->data_array, hashed_key))
 			return 4;
-		else
+		//Unexpected error, yet possible.
+		if (main_bucket->local_depth > GD)
+			return 5;
+		
+		bool doubling = false;
+		if (main_bucket->local_depth == GD)
 		{
-			if (main_bucket->local_depth < GD)
-			{
-				//Task: Just splitting and reshshing
-
-				//create new guy.
-				Bucket* secondary_bucket = new Bucket;
-				//adjust new local depths.
-				main_bucket->local_depth += 1;
-				int LD = main_bucket->local_depth;
-				secondary_bucket->local_depth = LD;
-				//Task: Rehash
-
-				//temp holder
-				vector<DataItem> temp_data_holder = main_bucket->data_array;
-				//add the new value we wish to add
-				temp_data_holder.push_back(item);
-				//empty the main bucket data
-				main_bucket->data_array.clear();
-				//main holder boundry
-				int main_bucket_boundry = castIt(hashed_key,LD);
-				//Range to exceed
-				int middle_range = (int)pow(2,LD-1);
-
-				//Arrange the main bucket boundry....I prefer main bucket to be the smaller in value.
-				if (main_bucket_boundry >= middle_range)
-					main_bucket_boundry -= middle_range;
-				//secondary holder boundry
-				int sec_bucket_boundry = main_bucket_boundry + middle_range;
-				
-				//rehash all values
-				for (int i=0; i<temp_data_holder.size(); i++)
-				{
-					int casted_hashed_key = castIt(hashCode(temp_data_holder[i].key),LD);
-					if (casted_hashed_key == main_bucket_boundry)
-						main_bucket->data_array.push_back(temp_data_holder[i]);
-					else if (casted_hashed_key == sec_bucket_boundry)
-						secondary_bucket->data_array.push_back(temp_data_holder[i]);
-					else
-						printf ("BREAKPOINT FOR EV ... Delete when done\n\n");
-				}
-				//Task: Create Directory Pointers
-				for (int i=0; i<Directory->size(); i++)
-				{
-					if (castIt(i,LD) == main_bucket_boundry)
-						(*Directory)[i] = main_bucket;
-
-					else if (castIt(i,LD) == sec_bucket_boundry)
-						(*Directory)[i] = secondary_bucket;
-
-					//else: m4 tb3na..
-				}
-				
-			}
-			else
-			{
-				//doubling, spliting, and reshashing
-			}
+			//Double the Directory, adjust your pointers, and then Split&Rehash
+			
+			//Can't double any more...hash value limit exceeded!
+			if (GD == K)
+				return 3;
+			//loop for the second half, first one is fine.
+			int size = Directory->size();
+			
+			for (int i=0; i<size; i++)
+				Directory->push_back((*Directory)[i]);
+		
+			doubling = true;
 		}
+
+		//Task: Just splitting and reshshing
+
+		//create new guy.
+		Bucket* secondary_bucket = new Bucket;
+		//adjust new local depths.
+		main_bucket->local_depth += 1;
+		int LD = main_bucket->local_depth;
+		secondary_bucket->local_depth = LD;
+		//Task: Rehash
+
+		//temp holder
+		vector<DataItem> temp_data_holder = main_bucket->data_array;
+		//add the new value we wish to add
+		temp_data_holder.push_back(item);
+		//empty the main bucket data
+		main_bucket->data_array.clear();
+		//main holder boundry
+		int main_bucket_boundry = castIt(hashed_key,LD);
+		//Range to exceed
+		int middle_range = (int)pow(2,LD-1);
+
+		//Arrange the main bucket boundry....I prefer main bucket to be the smaller in value.
+		if (main_bucket_boundry >= middle_range)
+			main_bucket_boundry -= middle_range;
+		//secondary holder boundry
+		int sec_bucket_boundry = main_bucket_boundry + middle_range;
+		
+		//rehash all values
+		for (int i=0; i<temp_data_holder.size(); i++)
+		{
+			int casted_hashed_key = castIt(hashCode(temp_data_holder[i].key),LD);
+			if (casted_hashed_key == main_bucket_boundry)
+				main_bucket->data_array.push_back(temp_data_holder[i]);
+			else if (casted_hashed_key == sec_bucket_boundry)
+				secondary_bucket->data_array.push_back(temp_data_holder[i]);
+			else
+				printf ("BREAKPOINT FOR EV ... Delete when done\n\n");
+		}
+		//Task: Create/Update Directory Pointers
+		for (int i=0; i<Directory->size(); i++)
+		{
+			if (castIt(i,LD) == main_bucket_boundry)
+				(*Directory)[i] = main_bucket;
+
+			else if (castIt(i,LD) == sec_bucket_boundry)
+				(*Directory)[i] = secondary_bucket;
+
+			//else: m4 tb3na..
+		}
+		if (doubling)
+			return 2;
+		else
+			return 1;			
+		
 	}
 	else
 	{

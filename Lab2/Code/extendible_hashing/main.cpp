@@ -8,14 +8,10 @@
 
 #include "readfile.h"
 
-int insert(int key,int data);
-int deleteItem(int key);
-struct DataItem * search(int key);
-
 
 //Global Variables
 
-vector<Bucket*> Directory;    //Main Directory Vector
+vector<Bucket*> Directory;    //Main Directory Vector with max size=hash_value
 int filehandle;               //handler for the database file
 
 /* DBMS (DataBase Management System) needs to store its data in something non-volatile
@@ -49,10 +45,16 @@ int main(){
    printf("\t\t############ EXTENDIBLE HASHING ##############\n\n");
    
    //1. Create Database file or Open it if it already exists, check readfile.cpp
-   filehandle = createFile(FILESIZE,(char *)"extendible");
-   Bucket* bucky = new Bucket;
-   printf("%p\n", bucky);
-   printf("%lu\n", sizeof(bucky));
+   bool exist = false;
+   filehandle = createFile(FILESIZE,(char *)"extendible", &exist);
+   //2. Init the Directory
+   init(&Directory, exist);
+
+  
+   // printf("%lu\n", sizeof(Directory));
+   printf("%d\n", (Directory[0]->local_depth));
+   printf("%d\n", (Directory[1]->local_depth));
+   
 
    // And Finally don't forget to close the file.
    close(filehandle);
@@ -90,10 +92,13 @@ int insert(int key,int data){
          printf("Value: %d \twith key: %d\t added with Splitting AND Doubling\n",data,key);
          break;
       case 3:
-         printf("Error 203: FILE SIZE LIMIT EXCEEDED at data: %d with key: %d\n",data,key);
+         printf("Error 203: Can't Double more! at data: %d with key: %d\n",data,key);
          break;
       case 4:
          printf("Error 204: Special Error; M keys exist, can't add more of data: %d with key: %d\n",data,key);
+         break;
+      case 5:
+         printf("Error 205: Unexpected Error at All; Data: %d with key: %d\n",data,key);
          break;
       }
       return state;

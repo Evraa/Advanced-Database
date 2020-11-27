@@ -1,8 +1,8 @@
 /*
  * readfile.h
  *
- *  Created on: Sep 20, 2016
- *      Author: dina
+ *  Created on: Sep 20, 2020
+ *      Authors: Ali Khalid & Mohamed Ramzy & Evram Yousef
  */
 
 #ifndef READFILE_H_
@@ -68,18 +68,15 @@ struct Bucket
 
 
 //Check the create File
-int createFile(int size, char *);
+int createFile(int size, char *, bool* exist);   //from old part
 
 //check the chaining File
-// int deleteItem(int data);
-int insertItem(int fd, DataItem item, vector<Bucket*> * Directory);
-int deleteItem(int filehandle, int key,vector<Bucket*> * Directory);
-int searchItem(int filehandle, int key,vector<Bucket*> * Directory);
-
-int DisplayFile(int fd);
-
-vector<int> binarize (int value);         //tested clean
-int debinarize(vector<int> vec);          //tested clean
-
+int insertItem(int fd, DataItem item, vector<Bucket*> * Directory);     //not tested yet
+int deleteItem(int filehandle, int key,vector<Bucket*> * Directory);    //not tested yet
+int searchItem(int filehandle, int key,vector<Bucket*> * Directory);    //not tested yet
+int DisplayFile(int fd);                                                //not tested yet
+vector<int> binarize (int value);                                       //tested clean
+int debinarize(vector<int> vec);                                        //tested clean
+void init(vector<Bucket*> * Directory, bool exist);                     //not tested yet
 
 #endif /* READFILE_H_ */

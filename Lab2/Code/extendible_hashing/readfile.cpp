@@ -6,7 +6,7 @@
  *          name: the name o the file
  * Output: return the file handler on success or -1 on failure
  */
-int createFile(int size,char * name)
+int createFile(int size,char * name, bool* exist)
 {
 
     int fd;
@@ -50,6 +50,7 @@ int createFile(int size,char * name)
     		perror("Error opening file for writing");
     	        return -1;
     	    }
+            (*exist) = true;
     }
     return fd;
 }
