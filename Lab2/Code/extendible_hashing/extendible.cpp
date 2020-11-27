@@ -88,13 +88,17 @@ int castIt (int value, int depth)
 
 int insertItem(int fd, DataItem item, vector<Bucket*>* Directory){
 	//TODO: implement the insert function.
-	int hashed_key = hashCode(item.key);		//int hashed key
-	int GD = (int)log2(Directory->size()); 		//global depth
+	int hashed_key = hashCode(item.key);						//int hashed key
+	int GD = (int)log2(Directory->size()); 						//global depth
 	Bucket* main_bucket = (*Directory)[castIt(hashed_key,GD)];  //that exact bucket shall hold item.key's value.
 
 	if (main_bucket->data_array.size() == M)
 	{
 		//OVERFLOW encountered
+
+		//imagine these values was added with M=2, hash_value=32: [0,32,64]
+		//where will 64 be stored at?
+		//so this is not file size error, nor writing error, this a Special error.	
 		if (allAreTheSame(main_bucket->data_array, hashed_key))
 			return 4;
 		else
@@ -107,7 +111,8 @@ int insertItem(int fd, DataItem item, vector<Bucket*>* Directory){
 				Bucket* secondary_bucket = new Bucket;
 				//adjust new local depths.
 				main_bucket->local_depth += 1;
-				secondary_bucket->local_depth = main_bucket->local_depth;
+				int LD = main_bucket->local_depth;
+				secondary_bucket->local_depth = LD;
 				//Task: Rehash
 
 				//temp holder
@@ -117,13 +122,20 @@ int insertItem(int fd, DataItem item, vector<Bucket*>* Directory){
 				//empty the main bucket data
 				main_bucket->data_array.clear();
 				//main holder boundry
-				int main_bucket_boundry = castIt(hashed_key,main_bucket->local_depth);
+				int main_bucket_boundry = castIt(hashed_key,LD);
+				//Range to exceed
+				int middle_range = (int)pow(2,LD-1);
+
+				//Arrange the main bucket boundry....I prefer main bucket to be the smaller in value.
+				if (main_bucket_boundry >= middle_range)
+					main_bucket_boundry -= middle_range;
 				//secondary holder boundry
-				int sec_bucket_boundry = main_bucket_boundry + GD;
+				int sec_bucket_boundry = main_bucket_boundry + middle_range;
+				
 				//rehash all values
 				for (int i=0; i<temp_data_holder.size(); i++)
 				{
-					int casted_hashed_key = castIt(hashCode(temp_data_holder[i].key),main_bucket->local_depth);
+					int casted_hashed_key = castIt(hashCode(temp_data_holder[i].key),LD);
 					if (casted_hashed_key == main_bucket_boundry)
 						main_bucket->data_array.push_back(temp_data_holder[i]);
 					else if (casted_hashed_key == sec_bucket_boundry)
@@ -132,8 +144,16 @@ int insertItem(int fd, DataItem item, vector<Bucket*>* Directory){
 						printf ("BREAKPOINT FOR EV ... Delete when done\n\n");
 				}
 				//Task: Create Directory Pointers
-				(*Directory)[main_bucket_boundry] = main_bucket;
-				(*Directory)[sec_bucket_boundry] = secondary_bucket;
+				for (int i=0; i<Directory->size(); i++)
+				{
+					if (castIt(i,LD) == main_bucket_boundry)
+						(*Directory)[i] = main_bucket;
+
+					else if (castIt(i,LD) == sec_bucket_boundry)
+						(*Directory)[i] = secondary_bucket;
+
+					//else: m4 tb3na..
+				}
 				
 			}
 			else
