@@ -54,10 +54,10 @@ int main(){
    insert(15,2);
    insert(13,3);
 
-   // insert(33,4);
-   // insert(22,5);
-   // insert(10,6);
-   // insert(1,7);
+   insert(33,4);
+   insert(22,5);
+   insert(10,6);
+   insert(1,7);
 
    
 
@@ -80,11 +80,11 @@ int main(){
 */
 int insert(int key,int data){
    
-      struct DataItem item ;
-      item.data = data;
-      item.key = key;
+      DataItem* item = new DataItem ;
+      item->data = data;
+      item->key = key;
 
-      int state = insertItem(filehandle,item,Directory);  //TODO: implement this function in openAddressing.cpp
+      int state = insertItem(filehandle,*item,Directory);  //TODO: implement this function in openAddressing.cpp
       
       switch (state)
       {
@@ -95,7 +95,7 @@ int insert(int key,int data){
          printf("Value: %d \twith key: %d\t added with no splitting nor doubling\n",data,key);
          break;
       case 1:
-         printf("Value: %d \twith key: %d\t added with Splitting bit no doubling\n",data,key);
+         printf("Value: %d \twith key: %d\t added with Splitting BUT no doubling\n",data,key);
          break;
       case 2:
          printf("Value: %d \twith key: %d\t added with Splitting AND Doubling\n",data,key);

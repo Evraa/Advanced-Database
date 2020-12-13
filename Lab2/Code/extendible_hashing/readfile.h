@@ -71,7 +71,7 @@ struct Bucket
 int createFile(int size, char *, bool* exist);   //from old part
 
 //check the chaining File
-int insertItem(int fd, DataItem item, vector<Bucket*> & Directory);     //tested clean
+int insertItem(int fd, DataItem &item, vector<Bucket*> & Directory);     //tested clean
 int deleteItem(int filehandle, int key,vector<Bucket*> * Directory);    //not tested yet
 int searchItem(int filehandle, int key,vector<Bucket*> * Directory);    //not tested yet
 int DisplayFile(int fd);                                                //not tested yet

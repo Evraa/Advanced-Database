@@ -104,27 +104,19 @@ void init(vector<Bucket*> & Directory, bool exist)
 	else
 	{
 		//Fill the directory sent
-		DataItem* dt_1 = new DataItem;
-		dt_1->key = 0;
-		dt_1->data = 1;
 		Bucket* bucky_1 = new Bucket();
-		bucky_1->local_depth = 11;
-		bucky_1->data_array.push_back(dt_1);
+		bucky_1->local_depth = 1;
 		Directory.push_back(bucky_1);
 
-		DataItem* dt_2 = new DataItem;
-		dt_2->key = 1;
-		dt_2->data = 2;
 		Bucket* bucky_2 = new Bucket();
-		bucky_2->local_depth = 22;
-		bucky_2->data_array.push_back(dt_2);
+		bucky_2->local_depth = 1;
 		Directory.push_back(bucky_2);
 		
 		return;
 	}
 }
 
-int insertItem(int fd, DataItem item, vector<Bucket*>&Directory){
+int insertItem(int fd, DataItem &item, vector<Bucket*>&Directory){
 	//TODO: implement the insert function.
 
 	int hashed_key = hashCode(item.key);						//int hashed key	
@@ -250,24 +242,25 @@ int searchItem(int filehandle, int key,map<vector<int>,int>* Direct){
 
 void print_directory(vector<Bucket*>& Directory)
 {
-	printf("Dict Size: %d\n",(int)Directory.size());
+	printf("Dict Global Size: %d\n\n",(int)Directory.size());
 		
 	for (int i=0; i<(int)Directory.size(); i++)
 	{
 		Bucket *buck = Directory[i];
-		printf("Bucket: %d\twith size: %d\n",i, (int)buck->data_array.size());
+		printf("\tBucket: %d\twith size: %d\n",i, (int)buck->data_array.size());
 		if (!buck->data_array.empty())
 		{
 			for (int j=0; j < (int)buck->data_array.size(); j++)
 			{
-				printf("Directory: %d, Key: %d, Data: %d\n", 
+				printf("\t\tData item: %d, Key: %d, Data: %d\n", 
 					i, buck->data_array[j]->key,buck->data_array[j]->data);
 			}
 		}
 		else
-			printf("Directory: %d has an empty bucket\n",i);
+			printf("\t\tEmpty Bucket\n");
 	
 	}
+	printf("\n");
 }
 
 
