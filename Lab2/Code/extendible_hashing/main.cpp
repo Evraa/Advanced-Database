@@ -11,6 +11,7 @@
 //Global Variables
 int filehandle;               //handler for the database file
 int insert(int key,int data);
+void search(int key);
 vector<Bucket*> Directory;    //Main Directory Vector with max size=hash_value
 
 /* DBMS (DataBase Management System) needs to store its data in something non-volatile
@@ -49,16 +50,22 @@ int main(){
    //2. Init the Directory
    init(Directory, exist);
 
-   insert(0,0);   
+   search(0);
+   insert(0,0);  
+   search(0);
+    
    insert(12,1);
    insert(15,2);
    insert(13,3);
-
+   search(0);
+   search(0);
+   
    insert(33,4);
    insert(22,5);
    insert(10,6);
    insert(1,7);
-
+   search(0);
+   
    
 
    // And Finally don't forget to close the file.
@@ -112,4 +119,13 @@ int insert(int key,int data){
       }
       print_directory(Directory);
       return state;
+}
+
+void search(int key)
+{
+   int results = searchItem(filehandle, key, Directory);
+   if (results == -1)
+      printf("Searching for key: %d, not found or an error occured\n", key);
+   else
+      printf("Searching for key: %d, and data: %d\n",key, results);
 }

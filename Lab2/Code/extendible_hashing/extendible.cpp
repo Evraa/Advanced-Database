@@ -221,7 +221,7 @@ int insertItem(int fd, DataItem &item, vector<Bucket*>&Directory){
 	}
 }
 
-int deleteItem(int filehandle, int key,map<vector<int>,int>* Direct){
+int deleteItem(int filehandle, int key,vector<Bucket*> & Directory){
 	//TODO: implement the delete function.
 
 	/**
@@ -230,14 +230,29 @@ int deleteItem(int filehandle, int key,map<vector<int>,int>* Direct){
 	*/
 	return 0;
 }
-int searchItem(int filehandle, int key,map<vector<int>,int>* Direct){
+int searchItem(int filehandle, int key,vector<Bucket*> & Directory){
 	// implement the search function.
 
 	/**
-	 * return -1 when error
+	 * return -1 when error or value does not exist
 	 * return the data value
 	*/
-	return 0;
+	int hashed_key = hashCode(key);
+	int GD = (int)log2(Directory.size());
+	int casted_key = castIt(hashed_key,GD);
+	Bucket* main_bucket = Directory[casted_key];
+	int ld = main_bucket->local_depth;
+	if (main_bucket->data_array.empty())
+		return -1;
+	else
+	{
+		for (int i=0; i<(int)main_bucket->data_array.size(); i++)
+		{
+			if (main_bucket->data_array[i]->key== hashed_key)
+				return main_bucket->data_array[i]->data;
+		}
+	}
+	return -1;
 }
 
 void print_directory(vector<Bucket*>& Directory)
