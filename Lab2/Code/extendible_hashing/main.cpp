@@ -49,19 +49,15 @@ int main(){
    //2. Init the Directory
    init(Directory, exist);
 
-   printf("Ev %d\n",Directory[0]->local_depth); //11
-   printf("Ev %d\n",Directory[1]->local_depth); //22
-   // printf("%d\n",Directory[2]->local_depth); //33
-
-   // printf("%lu\n", (Directory.size())); //debug
    insert(0,0);   
    insert(12,1);
    insert(15,2);
    insert(13,3);
-   insert(33,4);
-   insert(22,5);
-   insert(10,6);
-   insert(1,7);
+
+   // insert(33,4);
+   // insert(22,5);
+   // insert(10,6);
+   // insert(1,7);
 
    
 
@@ -88,13 +84,7 @@ int insert(int key,int data){
       item.data = data;
       item.key = key;
 
-      printf("Kareem %d\n",Directory[0]->local_depth);
-      printf("Kareem %d\n",Directory[1]->local_depth);
-      // printf("%d\n",(*Di)[2]->local_depth);
-
-      // int state = insertItem(filehandle,item,Directory);  //TODO: implement this function in openAddressing.cpp
-      int state = 0;
-      printf("Got here %d\n", state);
+      int state = insertItem(filehandle,item,Directory);  //TODO: implement this function in openAddressing.cpp
       
       switch (state)
       {

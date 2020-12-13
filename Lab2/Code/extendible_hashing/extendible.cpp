@@ -54,11 +54,11 @@ int debinarize(vector<int> vec){
 }
 
 
-bool allAreTheSame(vector<DataItem> buck_array, int hashy)
+bool allAreTheSame(vector<DataItem*> buck_array, int hashy)
 {
 	for (int i=0; i<buck_array.size(); i++)
 	{
-		if (hashCode(buck_array[i].key) != hashy)
+		if (hashCode(buck_array[i]->key) != hashy)
 			return false;
 	}
 	return true;
@@ -104,38 +104,33 @@ void init(vector<Bucket*> & Directory, bool exist)
 	else
 	{
 		//Fill the directory sent
-		Bucket buck_1,buck_2;
-		buck_1.local_depth = 11;
-		DataItem d;
-		d.data = 111;
-		d.key = 1111;
-		buck_1.data_array.push_back(d);
-		DataItem d2;
-		d2.data = 222;
-		d2.key = 2222;
-		buck_1.data_array.push_back(d2);
-		buck_2.local_depth = 22;
-		Directory.push_back(&buck_1);
-		Directory.push_back(&buck_2);
+		DataItem* dt_1 = new DataItem;
+		dt_1->key = 0;
+		dt_1->data = 1;
+		Bucket* bucky_1 = new Bucket();
+		bucky_1->local_depth = 11;
+		bucky_1->data_array.push_back(dt_1);
+		Directory.push_back(bucky_1);
+
+		DataItem* dt_2 = new DataItem;
+		dt_2->key = 1;
+		dt_2->data = 2;
+		Bucket* bucky_2 = new Bucket();
+		bucky_2->local_depth = 22;
+		bucky_2->data_array.push_back(dt_2);
+		Directory.push_back(bucky_2);
+		
 		return;
 	}
 }
 
 int insertItem(int fd, DataItem item, vector<Bucket*>&Directory){
 	//TODO: implement the insert function.
-	if (item.key >= hash_value)
-		return 5;
-		
-	int hashed_key = hashCode(item.key);						//int hashed key
+
+	int hashed_key = hashCode(item.key);						//int hashed key	
 	int GD = (int)log2(Directory.size()); 						//global depth
 	Bucket* main_bucket = Directory[castIt(hashed_key,GD)];  //that exact bucket shall hold item.key's value.
-	printf("LD: %d\n", Directory[0]->local_depth);
-	printf("LD: %d\n", Directory[1]->local_depth);
-	printf("Cast it value: %d\n",castIt(hashed_key,GD));
-	// printf("LD: %d\n", Directory[2]->local_depth);
 	
-	
-
 	if (main_bucket->data_array.size() == M)
 	{
 		//OVERFLOW encountered
@@ -145,6 +140,7 @@ int insertItem(int fd, DataItem item, vector<Bucket*>&Directory){
 		//so this is not file size error, nor writing error, this a Special error.	
 		if (allAreTheSame(main_bucket->data_array, hashed_key))
 			return 4;
+
 		//Unexpected error, yet possible.
 		if (main_bucket->local_depth > GD)
 			return 5;
@@ -165,7 +161,7 @@ int insertItem(int fd, DataItem item, vector<Bucket*>&Directory){
 			//so [000,001,010,011] are the same..no change
 			//and [100,101,110,111] -> 100 will be the same as 000 ...etc.
 			for (int i=0; i<size; i++)
-				Directory.push_back((Directory)[i]);
+				Directory.push_back(Directory[i]);
 		
 			doubling = true;
 		}
@@ -181,9 +177,9 @@ int insertItem(int fd, DataItem item, vector<Bucket*>&Directory){
 		//Task: Rehash
 
 		//temp holder
-		vector<DataItem> temp_data_holder = main_bucket->data_array;
+		vector<DataItem*> temp_data_holder = main_bucket->data_array;
 		//add the new value we wish to add
-		temp_data_holder.push_back(item);
+		temp_data_holder.push_back(&item);
 		//empty the main bucket data
 		main_bucket->data_array.clear();
 		//main holder boundry
@@ -200,7 +196,7 @@ int insertItem(int fd, DataItem item, vector<Bucket*>&Directory){
 		//rehash all values
 		for (int i=0; i<temp_data_holder.size(); i++)
 		{
-			int casted_hashed_key = castIt(hashCode(temp_data_holder[i].key),LD);
+			int casted_hashed_key = castIt(hashCode(temp_data_holder[i]->key),LD);
 			if (casted_hashed_key == main_bucket_boundry)
 				main_bucket->data_array.push_back(temp_data_holder[i]);
 			else if (casted_hashed_key == sec_bucket_boundry)
@@ -227,11 +223,8 @@ int insertItem(int fd, DataItem item, vector<Bucket*>&Directory){
 	}
 	else
 	{
-		printf("Got here Ev\n");
-	
 		//we are at el-Saleem
-		main_bucket->data_array.push_back(item);
-		printf("Got here Evvvv\n");
+		main_bucket->data_array.push_back(&item);
 		return 0;
 	}
 }
@@ -257,22 +250,22 @@ int searchItem(int filehandle, int key,map<vector<int>,int>* Direct){
 
 void print_directory(vector<Bucket*>& Directory)
 {
-
+	printf("Dict Size: %d\n",(int)Directory.size());
+		
 	for (int i=0; i<(int)Directory.size(); i++)
 	{
-		printf("%d\n",Directory.size());
 		Bucket *buck = Directory[i];
-		printf("%d\n",buck->data_array.size());
-		// if (!buck->data_array.empty())
-		// {
-		// 	for (int j=0; j < buck->data_array.size(); j++)
-		// 	{
-		// 		printf("Directory: %d, Key: %d, Data: %d\n", 
-		// 			i, buck->data_array[j].key,buck->data_array[j].data);
-		// 	}
-		// }
-		// else
-		// 	printf("Directory: %d has an empty bucket\n",i);
+		printf("Bucket: %d\twith size: %d\n",i, (int)buck->data_array.size());
+		if (!buck->data_array.empty())
+		{
+			for (int j=0; j < (int)buck->data_array.size(); j++)
+			{
+				printf("Directory: %d, Key: %d, Data: %d\n", 
+					i, buck->data_array[j]->key,buck->data_array[j]->data);
+			}
+		}
+		else
+			printf("Directory: %d has an empty bucket\n",i);
 	
 	}
 }

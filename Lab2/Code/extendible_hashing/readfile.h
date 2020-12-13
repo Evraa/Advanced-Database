@@ -62,7 +62,7 @@ struct DataItem
 //Struct for buckets, data is an array of size M
 struct Bucket 
 {
-   vector<DataItem> data_array;   //Max size must stay at M
+   vector<DataItem*> data_array;   //Max size must stay at M
    int local_depth;
 };
 
