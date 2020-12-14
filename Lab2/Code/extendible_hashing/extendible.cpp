@@ -1,8 +1,5 @@
 #include "readfile.h"
 
-
-
-
 /* Hash function to choose bucket
  * Input: key used to calculate the hash
  * Output: HashValue;
@@ -227,25 +224,78 @@ int deleteItem(int filehandle, int key,vector<Bucket*> & Directory){
 	/**
 	 * first search for the value, if it doesn't exist, print error 301
 	 * if it does exist, apply your algo.
+	 * 
+	 * -1	no result found
+	 * 0	just erased, no shrinking
+	 * 1	erased and merged two buckets
+	 * 2 	erased, merged two buckets and shrinked the dict.
 	*/
+
 	int hashed_key = hashCode(key);
 	int GD = (int)log2(Directory.size());
 	int casted_key = castIt(hashed_key,GD);
 	Bucket* main_bucket = Directory[casted_key];
 	int ld = main_bucket->local_depth;
+
 	if (main_bucket->data_array.empty())
 		return -1;
+
+	
 	else
 	{
 		vector<DataItem*>::iterator it;
+		bool found = false;
+
 		for (it = main_bucket->data_array.begin(); it != main_bucket->data_array.end(); it++)
 		{
 			DataItem* curr_item = *it;
-			if (curr_item->key == hashed_key){
+			if (curr_item->key == key){
 				delete curr_item;
 				main_bucket->data_array.erase(it);
+				found = true;
+				break;
 			}
 		}
+		if (!found)
+			return -1;
+
+		if ((int)Directory.size()==2)
+			return 0;
+
+		if (main_bucket->data_array.empty())
+		{
+			//merge?
+			int middle = (int)Directory.size()/2;
+			if (casted_key >= middle)
+				Directory[casted_key] = Directory[casted_key-middle];
+			else
+				Directory[casted_key] = Directory[casted_key+middle];
+
+			//shrink?
+			int dict_size = (int)Directory.size();
+			bool shrink = true;
+			for(int i=0;i <dict_size/2; i++)
+			{
+				if (Directory[i] != Directory[i+dict_size/2])
+					{
+						shrink = false;
+						break;
+					}
+			}
+			if (shrink)
+			{
+				// vector<Bucket*>::iterator itt;
+				// for (itt = Directory.begin()+(dict_size/2); itt != Directory.end(); itt++)
+				// 	Directory.erase(itt);
+				vector<Bucket*> new_Directory(Directory.begin(), Directory.begin()+(dict_size/2));
+				Directory = new_Directory;
+				return 2;
+			}
+			return 1;
+		}
+		else
+			return 0;
+		
 	}
 	return 0;
 }
@@ -267,7 +317,7 @@ int searchItem(int filehandle, int key,vector<Bucket*> & Directory){
 	{
 		for (int i=0; i<(int)main_bucket->data_array.size(); i++)
 		{
-			if (main_bucket->data_array[i]->key== hashed_key)
+			if (main_bucket->data_array[i]->key== key)
 				return main_bucket->data_array[i]->data;
 		}
 	}
@@ -286,8 +336,8 @@ void print_directory(vector<Bucket*>& Directory)
 		{
 			for (int j=0; j < (int)buck->data_array.size(); j++)
 			{
-				printf("\t\tData item: %d, Key: %d, Data: %d\n", 
-					i, buck->data_array[j]->key,buck->data_array[j]->data);
+				printf("\t\tKey: %d, \tData: %d\n", 
+					buck->data_array[j]->key,buck->data_array[j]->data);
 			}
 		}
 		else

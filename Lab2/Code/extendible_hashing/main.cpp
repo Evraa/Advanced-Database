@@ -11,6 +11,7 @@
 //Global Variables
 int filehandle;               //handler for the database file
 int insert(int key,int data);
+void delete_main(int key);
 void search(int key);
 vector<Bucket*> Directory;    //Main Directory Vector with max size=hash_value
 
@@ -50,23 +51,27 @@ int main(){
    //2. Init the Directory
    init(Directory, exist);
 
-   search(0);
    insert(0,0);  
-   search(0);
-    
    insert(12,1);
    insert(15,2);
    insert(13,3);
-   search(0);
-   search(0);
-   
    insert(33,4);
    insert(22,5);
-   insert(10,6);
-   insert(1,7);
-   search(0);
-   WriteFile(filehandle, Directory);
-   DisplayFile(filehandle);
+   delete_main(13);
+   delete_main(15);
+   delete_main(33);
+   delete_main(0);
+   delete_main(12);
+   delete_main(22);
+   delete_main(12);
+   
+   
+   // insert(10,6);
+   // insert(1,7);
+   
+   
+   // WriteFile(filehandle, Directory);
+   // DisplayFile(filehandle);
 
    // And Finally don't forget to close the file.
    close(filehandle);
@@ -128,4 +133,27 @@ void search(int key)
       printf("Searching for key: %d, not found or an error occured\n", key);
    else
       printf("Searching for key: %d, and data: %d\n",key, results);
+}
+
+void delete_main(int key)
+{
+
+   int state = deleteItem(filehandle, key,Directory);
+   switch (state)
+   {
+   case -1:
+      printf("DELETE -> Key: %d \tDoes Not exist\n",key);
+      break;
+   
+   case 0:
+      printf("DELETE -> Key: %d \tErased with no shrink no merge\n",key);
+      break;
+   case 1:
+      printf("DELETE -> Key: %d \tErased with merging ONLY\n",key);
+      break;
+   case 2:
+      printf("DELETE -> Key: %d \tErased with merge and shrink\n",key);
+      break;
+   }
+   print_directory(Directory);
 }
