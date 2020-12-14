@@ -29,26 +29,26 @@ vector<int> binarize(int value){
 /**
  * it's obvious.
 */
-int debinarize(vector<int> vec){
-	if (vec.size() == 0)
-		{
-			printf ("Error 101: Empty vector of binaries\n\n");
-			return -1;
-		}
-	if (vec.size() > K)
-		{
-			printf ("Error 102: Vector size exceeds the limit, can't process!\n\n");
-			return -1;
-		}
-	int value = 0;
-	int base = 0;
-	for (int i=0; i<vec.size(); i++){
-		if (vec[i] == 1)
-			value += pow(2,base);
-		base += 1;
-	}
-	return value;
-}
+// int debinarize(vector<int> vec){
+// 	if (vec.size() == 0)
+// 		{
+// 			printf ("Error 101: Empty vector of binaries\n\n");
+// 			return -1;
+// 		}
+// 	if (vec.size() > K)
+// 		{
+// 			printf ("Error 102: Vector size exceeds the limit, can't process!\n\n");
+// 			return -1;
+// 		}
+// 	int value = 0;
+// 	int base = 0;
+// 	for (int i=0; i<vec.size(); i++){
+// 		if (vec[i] == 1)
+// 			value += pow(2,base);
+// 		base += 1;
+// 	}
+// 	return value;
+// }
 
 
 bool allAreTheSame(vector<DataItem*> buck_array, int hashy)
