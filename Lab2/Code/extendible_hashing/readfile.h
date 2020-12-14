@@ -41,7 +41,7 @@ using namespace std;
       //if local depth = global depth -> split bucket AND double the directory AND Rehash
 
 
-#define M 2                                        //size of each bucket, when exceeding it (overflow), directory is doubled.
+#define M 3                                        //size of each bucket, when exceeding it (overflow), directory is doubled.
 #define hash_value 32                              //used in hash function, to map the key of the data
 #define MAX_DIRECT_SIZE hash_value                 //we can't have more than that; cuz K mod 32 only results in [32] values.
 #define K (int)log2(hash_value)                    //maximum number of bits in directory, ie. directory cant exceed 2^32

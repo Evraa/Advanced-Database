@@ -113,18 +113,6 @@ void init(int fd,vector<Bucket*> & Directory, bool exist)
 	}
 }
 
-int findApprDepth(int casted, int hashed_key, int LD)
-{
-	//size = K
-	int count = 0;
-	while (castIt(casted, LD) == castIt(hashed_key, LD))
-	{
-		count += 1;
-		LD += 1;
-	}
-	return count;
-}
-
 int insertItem(int fd, DataItem &item, vector<Bucket*>&Directory){
 	//TODO: implement the insert function.
 
@@ -142,15 +130,11 @@ int insertItem(int fd, DataItem &item, vector<Bucket*>&Directory){
 		if (allAreTheSame(main_bucket->data_array, hashed_key))
 			return 4;
 
-		//find the appropriate depth that makes the hashed key settled
-		int appropriate_depth = findApprDepth(castIt(hashed_key,GD), hashed_key, main_bucket->local_depth);
-		printf('EV: %d\n',appropriate_depth);
 		//Unexpected error, yet possible.
 		if (main_bucket->local_depth > GD)
 			return 5;
 		
 		bool doubling = false;
-
 		if (main_bucket->local_depth == GD)
 		{
 			//Double the Directory, adjust your pointers, and then Split&Rehash

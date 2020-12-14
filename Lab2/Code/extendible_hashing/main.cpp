@@ -49,21 +49,22 @@ int main(){
    bool exist = false;
    filehandle = createFile(FILESIZE,(char *)"extendible", &exist);
    //2. Init the Directory
-   init(file_handle, Directory, exist);
+   init(filehandle, Directory, exist);
 
    insert(0,0);  
-   insert(12,1);
-   insert(15,2);
-   insert(13,3);
-   insert(33,4);
-   insert(22,5);
-   delete_main(13);
-   delete_main(15);
-   delete_main(33);
-   delete_main(0);
-   delete_main(12);
-   delete_main(22);
-   delete_main(12);
+   insert(32,1);
+   insert(128,2);
+   insert(64,3);
+   insert(4,4);
+   insert(2,5);
+   // insert(22,5);
+   // delete_main(13);
+   // delete_main(15);
+   // delete_main(33);
+   // delete_main(0);
+   // delete_main(12);
+   // delete_main(22);
+   // delete_main(12);
    
    
    // insert(10,6);
