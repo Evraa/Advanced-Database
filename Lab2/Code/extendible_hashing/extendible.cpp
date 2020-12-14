@@ -364,35 +364,38 @@ void print_directory(vector<Bucket*>& Directory)
 	int n, temp;
 	//read the dict size
 	pread(fd,&n,sizeof(int), Offset);
+	printf("Number of Buckets: %d\n", n);
+	printf("Global depth: %d\n", (int)log2(n));
 	//set offset to the next int.
 	Offset += sizeof(int);
 	//array of all sizes possible
-	int sizes[33];
-	//this could be :
-		//int* sizes = new int[hash_value+1]
-	
+	int* sizes = new int[hash_value+1];
+	int buck;
 	for (int i=0; i<n; i++){
 		pread(fd, &temp, sizeof(int), Offset);
 		Offset += sizeof(int);
-		printf("Bucket: %d, local depth %d:~\n",(i),temp);
+		printf("Bucket: %d, local depth: %d\n",(i),temp);
 	}
 	for (int i=0; i<n; i++){
 		pread(fd, &temp, sizeof(int), Offset);
 		Offset += sizeof(int);
-		printf("Bucket: %d, number of elements %d:~\n",(i),temp);
+		printf("Bucket: %d, number of elements: %d\n",(i),temp);
 		sizes[i] = temp;
 	}
-	int buckt=0;
- 	for(Offset; Offset< FILESIZE; Offset += sizeof(DataItem))
+	bool break_cond = false;
+ 	for(Offset; Offset< FILESIZE; Offset += (sizeof(DataItem) + sizeof(int)))
  	{
-		// buckt incrementing logic.
- 		ssize_t result = pread(fd,&data,sizeof(DataItem), Offset);
+		pread(fd,&buck,sizeof(int), Offset);
+		if (buck > 0) 	break_cond = true;
+		if (break_cond && buck == 0) break;
+		
+ 		ssize_t result = pread(fd,&data,sizeof(DataItem), Offset + sizeof(int));
  		if(result < 0)
  		{ 	  perror("some error occurred in pread");
  			  return -1;
  		} 
  		else {
- 			printf("Bucket: %d, key: %d, data: %d:~\n", buckt, data.key, data.data);
+ 			printf("Bucket: %d, key: %d, data: %d\n", buck, data.key, data.data);
  		}
  	}
  	
@@ -402,6 +405,7 @@ void print_directory(vector<Bucket*>& Directory)
  
  void WriteFile(int fd, vector<Bucket*>& Directory){
 	int sz = Directory.size();
+	int buck;
 	pwrite(fd, &sz, sizeof(int), 0);
 	int offset = sizeof(int);
 	for (int i=0; i<(int)Directory.size(); i++){
@@ -421,6 +425,9 @@ void print_directory(vector<Bucket*>& Directory)
 		{
 			for (int j=0; j < (int)buck->data_array.size(); j++)
 			{	
+				
+				pwrite(fd, &i, sizeof(int), offset);
+				offset += sizeof(int);
 				pwrite(fd, &(*buck->data_array[j]), sizeof(DataItem), offset);
 				offset += sizeof(DataItem);
 			}
