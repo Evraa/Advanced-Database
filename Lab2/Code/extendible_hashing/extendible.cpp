@@ -287,39 +287,68 @@ void print_directory(vector<Bucket*>& Directory)
 //  *
 //  * Output: no. of non-empty records
 //  */
-// int DisplayFile(int fd){
-// 	printf("\n\n####### Display File #######\n\n");
-// 	struct DataItem data;
-// 	int count = 0;
-// 	int Offset = 0;
-// 	for(Offset =0; Offset< FILESIZE/2;Offset += sizeof(DataItem))
-// 	{
-// 		ssize_t result = pread(fd,&data,sizeof(DataItem), Offset);
-// 		if(result < 0)
-// 		{ 	  perror("some error occurred in pread");
-// 			  return -1;
-// 		} else if (result == 0 || data.valid == 0 ) { //empty space found or end of file
-// 			printf("Bucket: %d, Offset %d:~\n",(int)(Offset/BUCKETSIZE),Offset);
-// 		} else {
-// 			pread(fd,&data,sizeof(DataItem), Offset);
-// 			printf("Bucket: %d, Offset: %d, Data: %d, key: %d, points to: %d\n",(int)(Offset/BUCKETSIZE),Offset,data.data,data.key, data.pointer_index);
-// 					 count++;
-// 		}
-// 	}
-// 	for(Offset = FILESIZE/2; Offset < FILESIZE; Offset += sizeof(DataItem))
-// 	{
-// 		ssize_t result = pread(fd, &data, sizeof(DataItem), Offset);
-// 		if(result < 0)
-// 		{ 	  perror("some error occurred in pread");
-// 			  return -1;
-// 		} else if (result == 0 || data.valid == 0 ) { //empty space found or end of file
-// 			printf("Overflow, Offset %d:~\n", Offset);
-// 		} else {
-// 			pread(fd,&data,sizeof(DataItem), Offset);
-// 			printf("Overflow, Offset: %d, Data: %d, key: %d, points to: %d\n", Offset, data.data, data.key,data.pointer_index);
-// 					 count++;
-// 		}
-// 	}
-// 	printf("\n####### EOF #######\n\n");
-// 	return count;
-// }
+ int DisplayFile(int fd){
+ 	printf("\n\n####### Display File #######\n\n");
+ 	struct DataItem data;
+ 	int count = 0;
+ 	int Offset = 0;
+	int n, temp;
+	pread(fd,&n,sizeof(int), Offset);
+	Offset += sizeof(int);
+	int sizes[33];
+	
+	for (int i=0; i<n; i++){
+		pread(fd, (int)temp, sizeof(int), offset);
+		offset += sizeof(int);
+		printf("Bucket: %d, local depth %d:~\n",(i),temp);
+	}
+	for (int i=0; i<n; i++){
+		pread(fd, (int)temp, sizeof(int), offset);
+		offset += sizeof(int);
+		printf("Bucket: %d, number of elements %d:~\n",(i),temp);
+		sizes[i] = temp;
+	}
+	int buckt=0;
+ 	for(Offset; Offset< FILESIZE; Offset += sizeof(DataItem))
+ 	{
+		// buckt incrementing logic.
+ 		ssize_t result = pread(fd,&data,sizeof(DataItem), Offset);
+ 		if(result < 0)
+ 		{ 	  perror("some error occurred in pread");
+ 			  return -1;
+ 		} 
+ 		else {
+ 			printf("Bucket: %d, key: %d, data: %d:~\n", buckt, data.key, data.data);
+ 		}
+ 	}
+ 	
+	printf("\n####### EOF #######\n\n");
+ 	return 0;
+ }
+ 
+ void WriteFile(int fd, vector<Bucket*>& Directory){
+	pwrite(fd, (int)Directory.size(), sizeof(int), 0);
+	offset = sizeof(int)
+	for (int i=0; i<Directory.size(); i++){
+		pwrite(fd, (int)Directory[i]->local_depth, sizeof(int), offset);
+		offset += sizeof(int);
+	}
+	
+	for (int i=0; i<Directory.size(); i++){
+		pwrite(fd, (int)Directory[i]->data_array.size(), sizeof(int), offset);
+		offset += sizeof(int);
+	}
+	
+	for (int i=0; i<Directory.size(); i++){
+		Bucket *buck = Directory[i];
+		if (!buck->data_array.empty())
+		{
+			for (int j=0; j < (int)buck->data_array.size(); j++)
+			{
+				
+				pwrite(fd, &buck->data_array[j], sizeof(DataItem), Offset);
+				offset += sizeof(DataItem);
+			}
+		}
+	}
+ }
