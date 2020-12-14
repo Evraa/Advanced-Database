@@ -312,9 +312,14 @@ void print_directory(vector<Bucket*>& Directory)
  	int count = 0;
  	int Offset = 0;
 	int n, temp;
+	//read the dict size
 	pread(fd,&n,sizeof(int), Offset);
+	//set offset to the next int.
 	Offset += sizeof(int);
+	//array of all sizes possible
 	int sizes[33];
+	//this could be :
+		//int* sizes = new int[hash_value+1]
 	
 	for (int i=0; i<n; i++){
 		pread(fd, &temp, sizeof(int), Offset);
