@@ -354,20 +354,19 @@ void print_directory(vector<Bucket*>& Directory)
 		offset += sizeof(int);
 	}
 	
-	for (int i=0; i<Directory.size(); i++){
+	for (int i=0; i<(int)Directory.size(); i++){
 		sz = (int)Directory[i]->data_array.size();
 		pwrite(fd, &sz, sizeof(int), offset);
 		offset += sizeof(int);
 	}
 	
-	for (int i=0; i<Directory.size(); i++){
+	for (int i=0; i<(int)Directory.size(); i++){
 		Bucket *buck = Directory[i];
 		if (!buck->data_array.empty())
 		{
 			for (int j=0; j < (int)buck->data_array.size(); j++)
-			{
-				
-				pwrite(fd, &buck->data_array[j], sizeof(DataItem), offset);
+			{	
+				pwrite(fd, &(*buck->data_array[j]), sizeof(DataItem), offset);
 				offset += sizeof(DataItem);
 			}
 		}
