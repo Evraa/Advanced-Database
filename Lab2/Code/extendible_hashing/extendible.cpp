@@ -314,6 +314,8 @@ void print_directory(vector<Bucket*>& Directory)
 	int n, temp;
 	//read the dict size
 	pread(fd,&n,sizeof(int), Offset);
+	printf("Number of Buckets: %d\n", n);
+	printf("Global depth: %d\n", (int)log2(n));
 	//set offset to the next int.
 	Offset += sizeof(int);
 	//array of all sizes possible
