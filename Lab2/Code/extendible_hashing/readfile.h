@@ -78,6 +78,6 @@ int DisplayFile(int fd);                                                //not te
 void WriteFile(int fd, vector<Bucket*> & Directory);
 vector<int> binarize (int value);                                       //tested clean
 int debinarize(vector<int> vec);                                        //tested clean
-void init(vector<Bucket*> & Directory, bool exist);                     //not tested yet
+void init(int fd,vector<Bucket*> & Directory, bool exist);                     //not tested yet
 void print_directory(vector<Bucket*>& Directory);                       //tested clean
 #endif /* READFILE_H_ */

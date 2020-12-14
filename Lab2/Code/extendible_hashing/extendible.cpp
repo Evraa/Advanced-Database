@@ -88,7 +88,7 @@ int castIt (int value, int depth)
  * 
  * Input: Directory pointer from main, which is always empty at first...even if the file has old data.
 */
-void init(vector<Bucket*> & Directory, bool exist)
+void init(int fd,vector<Bucket*> & Directory, bool exist)
 {
     
 
