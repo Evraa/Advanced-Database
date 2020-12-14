@@ -49,7 +49,7 @@ int main(){
    bool exist = false;
    filehandle = createFile(FILESIZE,(char *)"extendible", &exist);
    //2. Init the Directory
-   init(Directory, exist);
+   init(file_handle, Directory, exist);
 
    insert(0,0);  
    insert(12,1);
