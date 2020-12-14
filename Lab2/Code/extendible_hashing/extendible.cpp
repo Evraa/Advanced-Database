@@ -267,9 +267,17 @@ int deleteItem(int filehandle, int key,vector<Bucket*> & Directory){
 			//merge?
 			int middle = (int)Directory.size()/2;
 			if (casted_key >= middle)
-				Directory[casted_key] = Directory[casted_key-middle];
+				{
+					Directory[casted_key] = Directory[casted_key-middle];
+					if (Directory[casted_key-middle]->local_depth > 1)
+						Directory[casted_key-middle]->local_depth -= 1;
+				}
 			else
-				Directory[casted_key] = Directory[casted_key+middle];
+				{
+					Directory[casted_key] = Directory[casted_key+middle];
+					if (Directory[casted_key+middle]->local_depth > 1)
+						Directory[casted_key+middle]->local_depth -= 1;
+				}
 
 			//shrink?
 			int dict_size = (int)Directory.size();
