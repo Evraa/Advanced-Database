@@ -65,8 +65,8 @@ int main(){
    insert(10,6);
    insert(1,7);
    search(0);
-   WriteFile(file_handle, Directory);
-   DisplayFile(file_handle);
+   WriteFile(filehandle, Directory);
+   DisplayFile(filehandle);
 
    // And Finally don't forget to close the file.
    close(filehandle);
