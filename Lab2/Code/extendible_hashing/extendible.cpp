@@ -228,6 +228,25 @@ int deleteItem(int filehandle, int key,vector<Bucket*> & Directory){
 	 * first search for the value, if it doesn't exist, print error 301
 	 * if it does exist, apply your algo.
 	*/
+	int hashed_key = hashCode(key);
+	int GD = (int)log2(Directory.size());
+	int casted_key = castIt(hashed_key,GD);
+	Bucket* main_bucket = Directory[casted_key];
+	int ld = main_bucket->local_depth;
+	if (main_bucket->data_array.empty())
+		return -1;
+	else
+	{
+		vector<DataItem*>::iterator it;
+		for (it = main_bucket->data_array.begin(); it != main_bucket->data_array.end(); it++)
+		{
+			DataItem* curr_item = *it;
+			if (curr_item->key == hashed_key){
+				delete curr_item;
+				main_bucket->data_array.erase(it);
+			}
+		}
+	}
 	return 0;
 }
 int searchItem(int filehandle, int key,vector<Bucket*> & Directory){
