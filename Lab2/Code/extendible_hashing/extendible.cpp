@@ -349,13 +349,13 @@ void print_directory(vector<Bucket*>& Directory)
 	int sz = Directory.size();
 	pwrite(fd, &sz, sizeof(int), 0);
 	int offset = sizeof(int);
-	for (int i=0; i<Directory.size(); i++){
+	for (int i=0; i<(int)Directory.size(); i++){
 		pwrite(fd, &Directory[i]->local_depth, sizeof(int), offset);
 		offset += sizeof(int);
 	}
 	
 	for (int i=0; i<Directory.size(); i++){
-		sz = Directory[i]->data_array.size();
+		sz = (int)Directory[i]->data_array.size();
 		pwrite(fd, &sz, sizeof(int), offset);
 		offset += sizeof(int);
 	}
