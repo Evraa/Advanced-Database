@@ -75,6 +75,7 @@ int insertItem(int fd, DataItem &item, vector<Bucket*> & Directory);     //teste
 int deleteItem(int filehandle, int key,vector<Bucket*> & Directory);    //not tested yet
 int searchItem(int filehandle, int key,vector<Bucket*> & Directory);    //not tested yet
 int DisplayFile(int fd);                                                //not tested yet
+void WriteFile(int fd, vector<Bucket*> & Directory);
 vector<int> binarize (int value);                                       //tested clean
 int debinarize(vector<int> vec);                                        //tested clean
 void init(vector<Bucket*> & Directory, bool exist);                     //not tested yet
