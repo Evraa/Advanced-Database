@@ -298,13 +298,13 @@ void print_directory(vector<Bucket*>& Directory)
 	int sizes[33];
 	
 	for (int i=0; i<n; i++){
-		pread(fd, (int)temp, sizeof(int), offset);
-		offset += sizeof(int);
+		pread(fd, &temp, sizeof(int), Offset);
+		Offset += sizeof(int);
 		printf("Bucket: %d, local depth %d:~\n",(i),temp);
 	}
 	for (int i=0; i<n; i++){
-		pread(fd, (int)temp, sizeof(int), offset);
-		offset += sizeof(int);
+		pread(fd, &temp, sizeof(int), Offset);
+		Offset += sizeof(int);
 		printf("Bucket: %d, number of elements %d:~\n",(i),temp);
 		sizes[i] = temp;
 	}
@@ -327,15 +327,17 @@ void print_directory(vector<Bucket*>& Directory)
  }
  
  void WriteFile(int fd, vector<Bucket*>& Directory){
-	pwrite(fd, (int)Directory.size(), sizeof(int), 0);
-	offset = sizeof(int)
+	int sz = Directory.size();
+	pwrite(fd, &sz, sizeof(int), 0);
+	int offset = sizeof(int);
 	for (int i=0; i<Directory.size(); i++){
-		pwrite(fd, (int)Directory[i]->local_depth, sizeof(int), offset);
+		pwrite(fd, &Directory[i]->local_depth, sizeof(int), offset);
 		offset += sizeof(int);
 	}
 	
 	for (int i=0; i<Directory.size(); i++){
-		pwrite(fd, (int)Directory[i]->data_array.size(), sizeof(int), offset);
+		sz = Directory[i]->data_array.size();
+		pwrite(fd, &sz, sizeof(int), offset);
 		offset += sizeof(int);
 	}
 	
@@ -346,7 +348,7 @@ void print_directory(vector<Bucket*>& Directory)
 			for (int j=0; j < (int)buck->data_array.size(); j++)
 			{
 				
-				pwrite(fd, &buck->data_array[j], sizeof(DataItem), Offset);
+				pwrite(fd, &buck->data_array[j], sizeof(DataItem), offset);
 				offset += sizeof(DataItem);
 			}
 		}
