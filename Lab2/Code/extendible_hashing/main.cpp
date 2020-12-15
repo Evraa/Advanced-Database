@@ -55,8 +55,10 @@ int main(){
    insert(32,1);
    insert(128,2);
    insert(64,3);
-   insert(4,4);
+   insert(8,4);
    insert(2,5);
+   insert(36,5);
+   
    // insert(22,5);
    // delete_main(13);
    // delete_main(15);
