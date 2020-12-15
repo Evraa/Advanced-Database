@@ -90,27 +90,16 @@ int castIt (int value, int depth)
 */
 void init(int fd,vector<Bucket*> & Directory, bool exist)
 {
-    
+    //Fill the directory sent
+	Bucket* bucky_1 = new Bucket();
+	bucky_1->local_depth = 1;
+	Directory.push_back(bucky_1);
 
-	if (exist)
-	{
-		//read it from file
-		//note, file may exist and directory is not, wo you gotta handle it somewhere
-		return;
-	}
-	else
-	{
-		//Fill the directory sent
-		Bucket* bucky_1 = new Bucket();
-		bucky_1->local_depth = 1;
-		Directory.push_back(bucky_1);
-
-		Bucket* bucky_2 = new Bucket();
-		bucky_2->local_depth = 1;
-		Directory.push_back(bucky_2);
-		
-		return;
-	}
+	Bucket* bucky_2 = new Bucket();
+	bucky_2->local_depth = 1;
+	Directory.push_back(bucky_2);
+	
+	return;
 }
 
 int insertItem(int fd, DataItem &item, vector<Bucket*>&Directory){
