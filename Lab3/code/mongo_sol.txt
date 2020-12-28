@@ -1,0 +1,96 @@
+//1- Create db
+mongoimport --db team_11_db  --collection collection1 --file retaurants.json --jsonArray
+
+//2- show all elements
+    //First assign the db
+    use team_11_db
+    //then
+    db.collection1.find().pretty()
+
+//3- display the fields restaurant_id, name, borough and zip code,
+    //but exclude the field _id for all the documents in the collection restaurant.
+    db.collection1.find({},{
+        "_id":0,
+        "restaurant_id":1,
+        "name":1,
+        "borough":1,
+        "address.zipcode":1
+    }).pretty()
+
+//4- display the first 5 restaurant which is in the borough Bronx.
+    db.collection1.find({"borough":"Bronx"}).limit(5).pretty()
+
+//5- display the next 5 restaurants after skipping first 5 which are in the borough Bronx. 
+    db.collection1.find({"borough":"Bronx"}).limit(5).skip(5).pretty()
+
+//6- find the restaurants that do not prepare any cuisine of 'American' and 
+    //their grade score more than 70 and latitude less than -65.754168.
+    //count: 5
+    db.collection1.find({
+        $and:[
+            {"cuisine":{$ne:"American "}},
+            {"grades.score": {$gt:70}},
+            {"address.coord.0":{$lt:-65.754168}}
+        ]
+    }
+    ).pretty()
+    
+
+//7- find the restaurants which belong to the
+    // borough Bronx and prepared either American or Chinese dish.
+    db.collection1.find({
+        "borough":"Bronx",
+        $or:[
+            {"cuisine":"American "},
+            {"cuisine":"Chinese"}
+        ]
+        }
+    ).pretty()
+
+//8- find the restaurant Id, name, borough and cuisine
+    //for those restaurants which achieved a score which is not more than 10. (less than or equal)
+    //(Note use $not)
+    //count: 340
+    db.collection1.find({
+        "grades.score": {$not:{$gt:10}}
+    },
+    {
+        "restaurant_id":1,
+        "name":1,
+        "borough":1,
+        "cuisine":1,
+        "_id":0
+    }
+    ).pretty()
+
+//9- select the restaurant Id, name and grades for those
+//   restaurants which returns 0 as a remainder after dividing the
+    //score by 7. (Note use $mod: [7,0])
+    db.collection1.find({
+        "grades.score": {$mod: [7,0]}
+    },
+    {
+        "restaurant_id":1,
+        "name":1,
+        "grades":1,
+        "_id":0
+    }
+    ).pretty()
+
+//10- find the restaurant Id, name, address and geographical location for those 
+    // restaurants where 2nd element of coord array
+    //contains a value which is more than 42 and upto 52.
+    db.collection1.find({
+        $and: [
+            {"address.coord.1": {$gt: 42}},
+            {"address.coord.1": {$lte: 52}}
+        ]
+        
+    },
+    {
+        "restaurant_id":1,
+        "name":1,
+        "address":1,
+        "_id":0
+    }
+    ).pretty()
