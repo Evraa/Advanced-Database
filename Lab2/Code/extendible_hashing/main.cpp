@@ -51,30 +51,19 @@ int main(){
    //2. Init the Directory
    init(filehandle, Directory, exist);
 
-   insert(0,0);  
    insert(32,1);
-   insert(128,2);
-   insert(64,3);
-   insert(8,4);
-   insert(2,5);
-   insert(36,5);
+   insert(64,2);
    
-   // insert(22,5);
-   // delete_main(13);
-   // delete_main(15);
-   // delete_main(33);
-   // delete_main(0);
-   // delete_main(12);
-   // delete_main(22);
-   // delete_main(12);
+   insert(128,3);
+   insert(6,4);
+   
+   // delete_main(6);
    
    
-   // insert(10,6);
-   // insert(1,7);
-   
-   
-   // WriteFile(filehandle, Directory);
-   // DisplayFile(filehandle);
+
+   WriteFile(filehandle, Directory);
+   printf("Displaying from the File..\n\n");
+   DisplayFile(filehandle);
 
    // And Finally don't forget to close the file.
    close(filehandle);

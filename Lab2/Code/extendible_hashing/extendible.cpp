@@ -382,8 +382,10 @@ void print_directory(vector<Bucket*>& Directory)
 	int n, temp;
 	//read the dict size
 	pread(fd,&n,sizeof(int), Offset);
+	printf("\t\tDictionary Spec.\n");
 	printf("Number of Buckets: %d\n", n);
 	printf("Global depth: %d\n", (int)log2(n));
+	printf("\t\tDictionary Content\n");
 	//set offset to the next int.
 	Offset += sizeof(int);
 	//array of all sizes possible
@@ -400,6 +402,7 @@ void print_directory(vector<Bucket*>& Directory)
 		printf("Bucket: %d, number of elements: %d\n",(i),temp);
 		sizes[i] = temp;
 	}
+	printf("\n\t\tFile Content\n\n");
 	bool break_cond = false;
  	for(Offset; Offset< FILESIZE; Offset += (sizeof(DataItem) + sizeof(int)))
  	{
@@ -408,11 +411,14 @@ void print_directory(vector<Bucket*>& Directory)
 		if (break_cond && buck == 0) break;
 		
  		ssize_t result = pread(fd,&data,sizeof(DataItem), Offset + sizeof(int));
+		if (buck == 0 && data.key == 0 && data.data == 0 )
+			break;
  		if(result < 0)
- 		{ 	  perror("some error occurred in pread");
+ 		{ 	  perror("error occurred in pread");
  			  return -1;
  		} 
- 		else {
+ 		else 
+		{
  			printf("Bucket: %d, key: %d, data: %d\n", buck, data.key, data.data);
  		}
  	}
